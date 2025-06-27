@@ -1,0 +1,71 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>{{ user.username }}'s Profile</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        body {
+            background: url('{% static "images/bg-glass.jpg" %}') no-repeat center center fixed;
+            background-size: cover;
+        }
+        .glass {
+            backdrop-filter: blur(10px);
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37);
+        }
+    </style>
+</head>
+<body class="min-h-screen flex items-center justify-center p-6 text-white">
+    <div class="glass p-8 rounded-2xl w-full max-w-3xl space-y-6">
+        <h1 class="text-3xl font-bold border-b pb-2">👤 {{ user.username }}'s Profile</h1>
+        
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div>
+                <p><strong>Email:</strong> {{ user.email }}</p>
+                <p><strong>Phone:</strong> {{ user.phone }}</p>
+                <p><strong>Age:</strong> {{ user.age }}</p>
+                <p><strong>User Type:</strong> {{ user.get_user_type_display }}</p>
+            </div>
+
+            {% if user.user_type == 'hospital' and user.hospital_profile %}
+            <div>
+                <p><strong>Hospital Name:</strong> {{ user.hospital_profile.name }}</p>
+                <p><strong>Address:</strong> {{ user.hospital_profile.address }}</p>
+                <p><strong>Hospital Code:</strong> {{ user.hospital_profile.hospital_code }}</p>
+                {% if user.hospital_profile.registration_qr %}
+                    <img src="{{ user.hospital_profile.registration_qr.url }}" alt="QR Code" class="mt-4 w-32 h-32">
+                {% endif %}
+            </div>
+            {% elif user.user_type == 'doctor' and user.doctor_profile %}
+            <div>
+                <p><strong>Name:</strong> Dr. {{ user.doctor_profile.name }}</p>
+                <p><strong>Speciality:</strong> {{ user.doctor_profile.speciality }}</p>
+                <p><strong>Room:</strong> {{ user.doctor_profile.room_clinic_number }}</p>
+                <p><strong>Gender:</strong> {{ user.doctor_profile.get_gender_display }}</p>
+                <p><strong>Hospital:</strong> {{ user.doctor_profile.hospital.name }}</p>
+            </div>
+            {% elif user.user_type == 'nurse' and user.nurse_profile %}
+            <div>
+                <p><strong>Name:</strong> {{ user.nurse_profile.name }}</p>
+                <p><strong>Gender:</strong> {{ user.nurse_profile.get_gender_display }}</p>
+                <p><strong>Age:</strong> {{ user.nurse_profile.age }}</p>
+                <p><strong>Hospital:</strong> {{ user.nurse_profile.hospital.name }}</p>
+            </div>
+            {% elif user.user_type == 'patient' and user.patient_profile %}
+            <div>
+                <p><strong>Name:</strong> {{ user.patient_profile.name }}</p>
+                <p><strong>Gender:</strong> {{ user.patient_profile.get_gender_display }}</p>
+                <p><strong>Phone:</strong> {{ user.patient_profile.phone }}</p>
+                <p><strong>Problems:</strong> {{ user.patient_profile.problem_diseases }}</p>
+                <p><strong>Medicines:</strong> {{ user.patient_profile.medicines_consumed|default:"None" }}</p>
+                <p><strong>Days Left:</strong> {{ user.patient_profile.medicine_countdown }}</p>
+                <p><strong>Visibility:</strong> {{ user.patient_profile.get_visibility_display }}</p>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+</body>
+</html>
