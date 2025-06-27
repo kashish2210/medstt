@@ -38,7 +38,8 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'stt',
-    'esp32'
+    'esp32',
+    'records'
 ]
 
 MIDDLEWARE = [
@@ -120,5 +121,6 @@ STATIC_URL = 'static/'
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.2/ref/settings/#default-auto-field
+AUTH_USER_MODEL = 'records.User'
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'

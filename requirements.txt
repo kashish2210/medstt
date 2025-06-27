@@ -49,3 +49,4 @@ urllib3
 websockets
 pynput
 soundfile
+qrcode

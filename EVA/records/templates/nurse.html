@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Nurse Registration</title>
+</head>
+<body>
+    <h1>Nurse Registration</h1>
+    
+    {% if messages %}
+        <div>
+            {% for message in messages %}
+                <p>{{ message }}</p>
+            {% endfor %}
+        </div>
+    {% endif %}
+    
+    <form method="post">
+        {% csrf_token %}
+        <div>
+            <label for="{{ form.username.id_for_label }}">Username:</label>
+            {{ form.username }}
+            {% if form.username.errors %}
+                <span>{{ form.username.errors }}</span>
+            {% endif %}
+        </div>
+        
+        <div>
+            <label for="{{ form.email.id_for_label }}">Email:</label>
+            {{ form.email }}
+            {% if form.email.errors %}
+                <span>{{ form.email.errors }}</span>
+            {% endif %}
+        </div>
+        
+        <div>
+            <label for="{{ form.password.id_for_label }}">Password:</label>
+            {{ form.password }}
+            {% if form.password.errors %}
+                <span>{{ form.password.errors }}</span>
+            {% endif %}
+        </div>
+        
+        <div>
+            <label for="{{ form.confirm_password.id_for_label }}">Confirm Password:</label>
+            {{ form.confirm_password }}
+            {% if form.confirm_password.errors %}
+                <span>{{ form.confirm_password.errors }}</span>
+            {% endif %}
+        </div>
+        
+        <div>
+            <label for="{{ form.name.id_for_label }}">Full Name:</label>
+            {{ form.name }}
+            {% if form.name.errors %}
+                <span>{{ form.name.errors }}</span>
+            {% endif %}
+        </div>
+        
+        <div>
+            <label for="{{ form.phone.id_for_label }}">Phone:</label>
+            {{ form.phone }}
+            {% if form.phone.errors %}
+                <span>{{ form.phone.errors }}</span>
+            {% endif %}
+        </div>
+        
+        <div>
+            <label for="{{ form.age.id_for_label }}">Age:</label>
+            {{ form.age }}
+            {% if form.age.errors %}
+                <span>{{ form.age.errors }}</span>
+            {% endif %}
+        </div>
+        
+        <div>
+            <label for="{{ form.gender.id_for_label }}">Gender:</label>
+            {{ form.gender }}
+            {% if form.gender.errors %}
+                <span>{{ form.gender.errors }}</span>
+            {% endif %}
+        </div>
+        
+        <div>
+            <label for="{{ form.hospital_code.id_for_label }}">Hospital Code:</label>
+            {{ form.hospital_code }}
+            {% if form.hospital_code.errors %}
+                <span>{{ form.hospital_code.errors }}</span>
+            {% endif %}
+            <small>{{ form.hospital_code.help_text }}</small>
+        </div>
+        
+        {% if form.non_field_errors %}
+            <div>{{ form.non_field_errors }}</div>
+        {% endif %}
+        
+        <button type="submit">Register Nurse</button>
+    </form>
+    
+    <p><a href="{% url 'register' %}">Back to Registration Options</a></p>
+    <p><a href="{% url 'login' %}">Already have an account? Login</a></p>
+</body>
+</html>

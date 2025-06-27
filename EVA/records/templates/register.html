@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hospital Management - Register</title>
+</head>
+<body>
+    <h1>Hospital Management System</h1>
+    <h2>Choose Registration Type</h2>
+    
+    <div>
+        <h3>Select your role to register:</h3>
+        <ul>
+            <li><a href="{% url 'hospital_register' %}">Register as Hospital</a></li>
+            <li><a href="{% url 'doctor_register' %}">Register as Doctor</a></li>
+            <li><a href="{% url 'nurse_register' %}">Register as Nurse</a></li>
+            <li><a href="{% url 'patient_register' %}">Register as Patient</a></li>
+        </ul>
+    </div>
+    
+    <div>
+        <p>Already have an account? <a href="{% url 'login' %}">Login here</a></p>
+    </div>
+</body>
+</html>
