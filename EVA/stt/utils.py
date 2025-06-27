@@ -6,7 +6,7 @@ import time
 
 def transcribe(iter, path, identifier, isFinal):
     transcription_record = Transcription.objects.filter(identifier = identifier)
-    model = whisper.load_model("tiny")
+    model = whisper.load_model("small")
     result = model.transcribe(path)["text"]
     result = [iter, result]
     if not transcription_record:
@@ -36,8 +36,8 @@ def result_json(identifier):
     # transcript = transcript.data
     url = "http://localhost:11434/api/generate"
     # transcript = """The patient appears to be a 27-year-old female presenting with symptoms consistent with a mild upper respiratory tract infection. Upon examination, her throat is slightly inflamed with no signs of tonsillar exudate. Lungs are clear on auscultation. Temperature is 99.4°F. No shortness of breath or chest pain reported. It’s likely viral in origin. Patient is otherwise healthy, no significant medical history. I’ve advised supportive care and symptomatic relief."""
-    patient_problem = """I’ve had a sore throat and a stuffy nose for the past 3 days. I feel a bit tired, and my body aches a little, but I haven’t had any major fever or cough. Just a general feeling of being unwell."""
-    
+    # patient_problem = """I’ve had a sore throat and a stuffy nose for the past 3 days. I feel a bit tired, and my body aches a little, but I haven’t had any major fever or cough. Just a general feeling of being unwell."""
+    patient_problem = ""
     
     transcript = Transcription.objects.filter(identifier=identifier)
     print('arrived in redirect')
@@ -55,7 +55,7 @@ def result_json(identifier):
     prompt = f"""You’re a distinguished and experienced medical physician. Here's a transcription of what a doctor thinks after consultation with a patient along with the problem faced by the patient. 
 Create a JSON output like:
 {{"Symptoms": "symptoms from the transcription",
-  "Observation": "basically some observational tests done by the doctor and what they observed like looking at throat and observation might be slight inflammation",
+  "Observation": "basically some observational tests done by the doctor",
  "Diagnosis": "Diagnosis of the doctor that fits the symptoms.",
  "Prescription": "Given by the doctor",
  "Guidelines/Advices": "Advices or restrictions that doctor tell the patient to follow",
@@ -70,6 +70,7 @@ PROBLEM/SYMPTOMS OF PATIENT (told by the patient before consultation): "{patient
 **Return the json as text, no need to add markup like ```json***
 **Don't use semicolon i.e ; instead of comma i.e ,**
 **If the transcript is empty or gibberish, just return {{'response': 'gibberish'}}**
+**Dont diagnose Yourself just use TRANSCRIPTION for that else leave fields empty if not provided**
 """
 
     payload = {
