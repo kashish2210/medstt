@@ -134,9 +134,9 @@ MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 # https://docs.djangoproject.com/en/5.1/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
-ACCOUNT_SID='ACbed89cd8a59a3a232ab595d83383a43f'
-AUTH_TOKEN='054ac27ca3f3aa92cac9f42aa548b82a'
+ACCOUNT_SID=''
+AUTH_TOKEN=''
 COUNTRY_CODE='+91'
-TWILIO_WHATSAPP_NUMBER='+15154171150'
-TWILIO_PHONE_NUMBER='+15154171150'
+TWILIO_WHATSAPP_NUMBER=''
+TWILIO_PHONE_NUMBER=''
 ASGI_APPLICATION = 'health_app.asgi.application'
