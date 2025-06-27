@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>ESP32 Audio Recorder</title>
+    <script>
+        function startRecording() {
+            fetch('/esp32/start/')
+                .then(response => response.json())
+                .then(data => {
+                    document.getElementById("status").innerText = data.status;
+                });
+        }
+
+        function stopRecording() {
+            fetch('/esp32/stop/')
+                .then(response => response.json())
+                .then(data => {
+                    document.getElementById("status").innerText = data.status;
+                });
+        }
+    </script>
+</head>
+<body>
+    <h1>🎤 ESP32 Audio Recorder</h1>
+    <button onclick="startRecording()">▶️ Start Recording</button>
+    <button onclick="stopRecording()">⏹️ Stop & Save</button>
+    <p id="status">Status: Ready</p>
+</body>
+</html>

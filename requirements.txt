@@ -47,3 +47,5 @@ typing_extensions
 tzdata
 urllib3
 websockets
+pynput
+soundfile
