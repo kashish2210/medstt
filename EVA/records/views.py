@@ -274,3 +274,5 @@ def save(self, *args, **kwargs):
             save=False
         )
         super().save(update_fields=['registration_qr'])
+def profile_view(request):
+    return render(request, 'profile.html', {'user': request.user})
