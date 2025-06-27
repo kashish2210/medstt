@@ -4,22 +4,74 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Dashboard - Hospital Management</title>
+    <style>
+        :root {
+            --bg: linear-gradient(to right,rgb(21, 82, 78), #b490ca);
+            --glass: rgba(255, 255, 255, 0.1);
+            --text: #fff;
+            --border: rgba(255, 255, 255, 0.3);
+            --shadow: rgba(0, 0, 0, 0.3);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background: var(--bg);
+            color: var(--text);
+            padding: 40px 20px;
+        }
+
+        nav {
+            background: var(--glass);
+            padding: 20px;
+            border-radius: 12px;
+            border: 1px solid var(--border);
+            box-shadow: 0 8px 16px var(--shadow);
+            margin-bottom: 30px;
+        }
+
+        main {
+            background: var(--glass);
+            padding: 30px;
+            border-radius: 12px;
+            border: 1px solid var(--border);
+            box-shadow: 0 8px 24px var(--shadow);
+        }
+
+        h1, h2, h3, h4 {
+            margin-bottom: 15px;
+        }
+
+        p, li {
+            margin-bottom: 10px;
+        }
+
+        ul {
+            list-style: disc inside;
+            margin-left: 20px;
+        }
+
+        div {
+            margin-bottom: 25px;
+        }
+    </style>
 </head>
 <body>
-    <!-- Navigation Bar -->
     <nav>
         <div>
             <h2>Welcome {{ user.get_full_name|default:user.username }}!</h2>
             <p>User Type: {{ user.get_user_type_display }}</p>
         </div>
-        {% comment %} <div>
-            <a href="{% url 'logout' %}">Logout</a>
-        </div> {% endcomment %}
     </nav>
-    
+
     <main>
         <h1>Dashboard</h1>
-        
+
         {% if user.user_type == 'hospital' %}
             <h2>Hospital Dashboard</h2>
             <div>
@@ -28,7 +80,6 @@
                 <p><strong>Address:</strong> {{ hospital.address }}</p>
                 <p><strong>Hospital Code:</strong> {{ hospital.hospital_code }}</p>
             </div>
-            
             <div>
                 <h3>Doctors ({{ doctors.count }})</h3>
                 {% if doctors %}
@@ -41,7 +92,6 @@
                     <p>No doctors registered yet.</p>
                 {% endif %}
             </div>
-            
             <div>
                 <h3>Nurses ({{ nurses.count }})</h3>
                 {% if nurses %}
@@ -54,7 +104,6 @@
                     <p>No nurses registered yet.</p>
                 {% endif %}
             </div>
-            
             <div>
                 <h3>Rooms ({{ rooms.count }})</h3>
                 {% if rooms %}
@@ -67,7 +116,7 @@
                     <p>No rooms added yet.</p>
                 {% endif %}
             </div>
-            
+
         {% elif user.user_type == 'doctor' %}
             <h2>Doctor Dashboard</h2>
             <div>
@@ -79,7 +128,6 @@
                     <p><strong>Hospital:</strong> {{ doctor.hospital.name }}</p>
                 {% endif %}
             </div>
-            
             <div>
                 <h3>Current Queue ({{ queues.count }})</h3>
                 {% if queues %}
@@ -92,7 +140,6 @@
                     <p>No patients in queue.</p>
                 {% endif %}
             </div>
-            
             <div>
                 <h3>Medical Cases ({{ cases.count }})</h3>
                 {% if cases %}
@@ -105,7 +152,7 @@
                     <p>No medical cases yet.</p>
                 {% endif %}
             </div>
-            
+
         {% elif user.user_type == 'nurse' %}
             <h2>Nurse Dashboard</h2>
             <div>
@@ -116,7 +163,6 @@
                     <p><strong>Hospital:</strong> {{ nurse.hospital.name }}</p>
                 {% endif %}
             </div>
-            
             <div>
                 <h3>Quick Actions</h3>
                 <ul>
@@ -125,7 +171,7 @@
                     <li>Assist Doctors</li>
                 </ul>
             </div>
-            
+
         {% elif user.user_type == 'patient' %}
             <h2>Patient Dashboard</h2>
             <div>
@@ -135,21 +181,13 @@
                 <p><strong>Gender:</strong> {{ patient.get_gender_display }}</p>
                 <p><strong>Medicine Days Remaining:</strong> {{ patient.medicine_countdown }}</p>
             </div>
-            
             <div>
                 <h3>Current Health Status</h3>
-                <div>
-                    <h4>Problems/Diseases:</h4>
-                    <p>{{ patient.problem_diseases }}</p>
-                </div>
+                <p><strong>Problems/Diseases:</strong> {{ patient.problem_diseases }}</p>
                 {% if patient.medicines_consumed %}
-                    <div>
-                        <h4>Current Medicines:</h4>
-                        <p>{{ patient.medicines_consumed }}</p>
-                    </div>
+                    <p><strong>Current Medicines:</strong> {{ patient.medicines_consumed }}</p>
                 {% endif %}
             </div>
-            
             <div>
                 <h3>Appointments in Queue ({{ queues.count }})</h3>
                 {% if queues %}
@@ -162,7 +200,6 @@
                     <p>No appointments in queue.</p>
                 {% endif %}
             </div>
-            
             <div>
                 <h3>Medical Cases ({{ cases.count }})</h3>
                 {% if cases %}

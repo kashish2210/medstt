@@ -11,8 +11,6 @@ import requests
 import time
 
 
-
-# Create your views here.
 def index(request):
     return render(request, 'stt/stt.html')
 
@@ -26,7 +24,6 @@ def upload_audio(request):
         isFinal = True if request.POST['final'] == 'true' else False
         iter = audio_file.name.split(".")[0]
         print(type(request.POST['final']), request.POST['final'])
-        # Save the file to MEDIA_ROOT/uploads/ folder
         upload_dir = os.path.join(settings.MEDIA_ROOT, 'uploads')
         os.makedirs(upload_dir, exist_ok=True)
 

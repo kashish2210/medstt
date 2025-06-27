@@ -41,7 +41,8 @@ INSTALLED_APPS = [
     'stt',
     'esp32',
     'records',
-    'verification'
+    'verification',
+    'accounts'
 ]
 
 MIDDLEWARE = [

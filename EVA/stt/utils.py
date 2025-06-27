@@ -75,7 +75,7 @@ PROBLEM/SYMPTOMS OF PATIENT (told by the patient before consultation): "{patient
     payload = {
     "model": "llama3.2",  
     "prompt": prompt,
-    "stream": False  # Set True to get streaming tokens
+    "stream": False  
 }
     response = requests.post(url, json=payload)
     return response

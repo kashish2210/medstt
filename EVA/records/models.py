@@ -6,7 +6,7 @@ from io import BytesIO
 from django.core.files import File
 from PIL import Image
 
-# Custom User Model
+
 class User(AbstractUser):
     USER_TYPE_CHOICES = (
         ('hospital', 'Hospital'),
@@ -21,7 +21,7 @@ class User(AbstractUser):
     def __str__(self):
         return f"{self.username} ({self.user_type})"
 
-# Hospital Model
+
 class Hospital(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE, related_name='hospital_profile')
     name = models.CharField(max_length=200)
@@ -57,7 +57,7 @@ class Hospital(models.Model):
     def __str__(self):
         return self.name
 
-# Doctor Model
+
 class Doctor(models.Model):
     GENDER_CHOICES = (
         ('M', 'Male'),
@@ -87,7 +87,7 @@ class Doctor(models.Model):
     def __str__(self):
         return f"Dr. {self.name} - {self.speciality}"
 
-# Nurse Model
+
 class Nurse(models.Model):
     GENDER_CHOICES = (
         ('M', 'Male'),
@@ -115,7 +115,7 @@ class Nurse(models.Model):
     def __str__(self):
         return f"Nurse {self.name}"
 
-# Patient Model
+
 class Patient(models.Model):
     GENDER_CHOICES = (
         ('M', 'Male'),
@@ -143,7 +143,7 @@ class Patient(models.Model):
     def __str__(self):
         return f"Patient {self.name}"
 
-# Room Model
+
 class Room(models.Model):
     hospital = models.ForeignKey(Hospital, on_delete=models.CASCADE, related_name='rooms')
     floor = models.IntegerField()
@@ -154,7 +154,7 @@ class Room(models.Model):
     def __str__(self):
         return f"Room {self.room_number} - Floor {self.floor}"
 
-# Queue Model
+
 class Queue(models.Model):
     doctor = models.ForeignKey(Doctor, on_delete=models.CASCADE, related_name='queues')
     patient = models.ForeignKey(Patient, on_delete=models.CASCADE)
@@ -168,7 +168,7 @@ class Queue(models.Model):
     def __str__(self):
         return f"Queue {self.queue_number} - Dr. {self.doctor.name} - {self.patient.name}"
 
-# Medical Case Model
+
 class MedicalCase(models.Model):
     STATUS_CHOICES = (
         ('active', 'Active'),
@@ -188,7 +188,7 @@ class MedicalCase(models.Model):
     def __str__(self):
         return f"Case: {self.case_title} - {self.patient.name}"
 
-# Medical Record Model
+
 class MedicalRecord(models.Model):
     case = models.ForeignKey(MedicalCase, on_delete=models.CASCADE, related_name='records')
     consultation_date = models.DateTimeField(auto_now_add=True)
