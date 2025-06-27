@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Streaming Audio Upload</title>
+</head>
+<body>
+  <h1>Audio Recorder</h1>
+  <button id="recordBtn">Start Recording</button>
+  <p id="result"></p>
+
+  <script>
+    let isRecording = false;
+    let mediaRecorder;
+    let recordedChunks = [];
+    let uploadInterval;
+    let stream;
+    let isFinal = false
+    let iter = 1
+
+    let isFinal_copy = false
+    let iter_copy = 1
+    
+    const doctor_id = 99
+    const now = new Date();
+
+    const year = now.getUTCFullYear();
+    const month = String(now.getUTCMonth() + 1).padStart(2, '0');
+    const day = String(now.getUTCDate()).padStart(2, '0');
+    const hours = String(now.getUTCHours()).padStart(2, '0');
+    const minutes = String(now.getUTCMinutes()).padStart(2, '0');
+    const seconds = String(now.getUTCSeconds()).padStart(2, '0');
+    const millis = String(now.getUTCMilliseconds()).padStart(3, '0');
+    
+    
+    const identifier = `${doctor_id}${year}${month}${day}${hours}${minutes}${seconds}${millis}`;
+    const recordBtn = document.getElementById('recordBtn');
+    const result = document.getElementById('result');
+
+    recordBtn.addEventListener('click', async () => {
+      if (!isRecording) {
+        stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+        mediaRecorder = new MediaRecorder(stream);
+        recordedChunks = [];
+        
+        mediaRecorder.ondataavailable = (e) => {
+          if (e.data.size > 0) {
+            recordedChunks.push(e.data)
+          }
+        };
+
+        mediaRecorder.onstop = async () => {
+
+          // Send any remaining chunks
+          if (recordedChunks.length > 0) {
+            await uploadChunks(iter_copy, recordedChunks);
+            iter++
+            recordedChunks = [];
+          }
+         
+        };
+
+        mediaRecorder.start(); // capture every second (internally)
+
+        // Start uploading every 30 seconds
+        uploadInterval = setInterval(async () => {
+          iter_copy = iter
+          mediaRecorder.stop()
+          mediaRecorder.start()
+        }, 5 * 1000); 
+
+        isRecording = true;
+        recordBtn.textContent = 'Stop Recording';
+      } else {
+        isFinal = true
+        isFinal_copy = isFinal
+        iter_copy = iter
+        mediaRecorder.stop(); // triggers onstop
+        stream.getTracks().forEach(track => track.stop());
+        clearInterval(uploadInterval);
+        alert('Recording stopped and all data uploaded');
+        isRecording = false;
+        isFinal = false;
+        iter = 1
+        recordBtn.remove()
+        try {
+          const response = await fetch('http://127.0.0.1:8000/stt/result_json/'+identifier+'/', {
+          method: "GET"
+        })
+          const result = await response.json()
+          console.log(result)
+        }catch (err) {
+        console.error('Upload failed:', err);
+      }
+        
+      }
+    });
+
+    async function uploadChunks(iter, chunks) {
+      const audioBlob = new Blob(chunks, { type: 'audio/webm' });
+      const formData = new FormData();
+      formData.append('audio', audioBlob, `${iter}.webm`);
+      formData.append("identifier", identifier)
+      formData.append("final", isFinal_copy)
+      try {
+        const response = await fetch('http://127.0.0.1:8000/stt/upload/', {
+          method: 'POST',
+          body: formData
+        });
+
+        const result = await response.json();
+        console.log('Chunk uploaded:', result.message);
+      } catch (err) {
+        console.error('Upload failed:', err);
+      }
+    }
+  </script>
+</body>
+</html>
