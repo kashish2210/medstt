@@ -3,11 +3,67 @@
 <head>
   <meta charset="UTF-8">
   <title>Streaming Audio Upload</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      background-color: #f5f7fa;
+      margin: 0;
+      padding: 2rem;
+      color: #333;
+    }
+
+    h1 {
+      color: #2c3e50;
+      text-align: center;
+      margin-bottom: 2rem;
+    }
+
+    #recordBtn {
+      display: block;
+      margin: 0 auto 2rem auto;
+      padding: 0.75rem 1.5rem;
+      font-size: 1rem;
+      font-weight: bold;
+      background: #3498db;
+      border: none;
+      border-radius: 8px;
+      color: white;
+      cursor: pointer;
+      transition: background 0.3s;
+    }
+
+    #recordBtn:hover {
+      background: #2980b9;
+    }
+
+    #result-container {
+      max-width: 600px;
+      margin: 0 auto;
+      background: #ffffff;
+      padding: 1.5rem;
+      border-radius: 12px;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    }
+
+    #result-container h3 {
+      font-size: 1.1rem;
+      color: #1a237e;
+      margin-bottom: 4px;
+      margin-top: 1.25rem;
+    }
+
+    #result-container p {
+      font-size: 1rem;
+      color: #333;
+      padding-left: 10px;
+      margin-bottom: 0.75rem;
+    }
+  </style>
 </head>
 <body>
   <h1>Audio Recorder</h1>
   <button id="recordBtn">Start Recording</button>
-  <p id="result"></p>
+  <div id="result-container"></div>
 
   <script>
     let isRecording = false;
@@ -67,7 +123,7 @@
           iter_copy = iter
           mediaRecorder.stop()
           mediaRecorder.start()
-        }, 5 * 1000); 
+        }, 10 * 1000); 
 
         isRecording = true;
         recordBtn.textContent = 'Stop Recording';
@@ -83,15 +139,7 @@
         isFinal = false;
         iter = 1
         recordBtn.remove()
-        try {
-          const response = await fetch('http://127.0.0.1:8000/stt/result_json/'+identifier+'/', {
-          method: "GET"
-        })
-          const result = await response.json()
-          console.log(result)
-        }catch (err) {
-        console.error('Upload failed:', err);
-      }
+        
         
       }
     });
@@ -110,10 +158,38 @@
 
         const result = await response.json();
         console.log('Chunk uploaded:', result.message);
-      } catch (err) {
+          if (result.message != true){
+            console.log('Chunk uploaded:', result);
+            renderJsonAsText(result)
+          }
+      }
+        catch (err) {
         console.error('Upload failed:', err);
       }
     }
+
+    function renderJsonAsText(jsonData, containerId = 'result-container') {
+      const container = document.getElementById(containerId);
+      container.innerHTML = '';  // Clear any previous content
+
+      for (const key in jsonData) {
+          if (Object.hasOwnProperty.call(jsonData, key)) {
+              const heading = document.createElement('h3');
+              heading.textContent = key;
+              heading.style.marginBottom = '4px';
+              heading.style.color = '#2c3e50';
+
+              const para = document.createElement('p');
+              para.textContent = jsonData[key] || '—';
+              para.style.marginBottom = '16px';
+              para.style.paddingLeft = '10px';
+
+              container.appendChild(heading);
+              container.appendChild(para);
+          }
+      }
+    }
+
   </script>
 </body>
 </html>

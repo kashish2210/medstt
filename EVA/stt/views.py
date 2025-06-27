@@ -40,6 +40,7 @@ def upload_audio(request):
             print('this occurs')
             response = result_json(identifier)
             print('got the response')
+            print(response)
             if response.ok:
                 result = response.json()
                 data = json.loads(result['response'])
@@ -51,6 +52,4 @@ def upload_audio(request):
     else:
         return JsonResponse({'status': 'error', 'message': 'Invalid request'}, status=400)
     
-
-
 
