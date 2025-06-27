@@ -11,6 +11,7 @@ https://docs.djangoproject.com/en/5.2/ref/settings/
 """
 import os
 from pathlib import Path
+import os
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -39,7 +40,8 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'stt',
     'esp32',
-    'records'
+    'records',
+    'verification'
 ]
 
 MIDDLEWARE = [
@@ -132,3 +134,17 @@ STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 AUTH_USER_MODEL = 'records.User'
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+MEDIA_URL = '/media/'
+MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
+
+
+# Default primary key field type
+# https://docs.djangoproject.com/en/5.1/ref/settings/#default-auto-field
+
+DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+ACCOUNT_SID=''
+AUTH_TOKEN=''
+COUNTRY_CODE='+91'
+TWILIO_WHATSAPP_NUMBER=''
+TWILIO_PHONE_NUMBER=''
+ASGI_APPLICATION = 'health_app.asgi.application'

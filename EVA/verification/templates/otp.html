@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>OTP Verification</title>
+    <style>
+        /* Basic reset */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        /* Body background */
+        body {
+            background: linear-gradient(135deg, #e1bee7, #ffffff);
+            font-family: 'Arial', sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            overflow: hidden;
+        }
+
+        /* Glassy container effect */
+        .container {
+            background: rgba(255, 255, 255, 0.4); /* Semi-transparent white */
+            backdrop-filter: blur(10px); /* Glassy effect */
+            border-radius: 12px;
+            padding: 40px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            width: 100%;
+            max-width: 400px;
+            text-align: center;
+        }
+
+        /* Heading style */
+        h1 {
+            color: #6a1b9a;
+            font-size: 28px;
+            margin-bottom: 20px;
+        }
+
+        /* Label styling */
+        label {
+            font-size: 16px;
+            color: #5e35b1;
+            display: block;
+            margin-bottom: 8px;
+        }
+
+        /* Input fields style */
+        input[type="text"], input[type="submit"] {
+            width: 100%;
+            padding: 15px;
+            margin-bottom: 20px;
+            border-radius: 8px;
+            border: 1px solid #d1c4e9;
+            font-size: 16px;
+        }
+
+        input[type="text"] {
+            background: #fff;
+            color: #333;
+        }
+
+        /* Submit button style */
+        input[type="submit"] {
+            background-color: #9c27b0;
+            color: white;
+            border: none;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        input[type="submit"]:hover {
+            background-color: #7b1fa2;
+        }
+
+        /* Responsive design for smaller screens */
+        @media (max-width: 480px) {
+            .container {
+                padding: 30px;
+            }
+
+            h1 {
+                font-size: 24px;
+            }
+
+            input[type="text"], input[type="submit"] {
+                padding: 12px;
+                font-size: 14px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>OTP Verification</h1>
+        <form action="/otp/{{ id }}/" method="post">
+            {% csrf_token %}
+            <label for="otp">Enter OTP:</label>
+            <input id="otp" type="text" name="otp" required>
+            <input type="submit" value="Verify OTP">
+        </form>
+    </div>
+</body>
+</html>

@@ -9,7 +9,6 @@ Django
 filelock
 fsspec
 google-auth
-google-genai
 h11
 httpcore
 httpx
@@ -50,3 +49,4 @@ websockets
 pynput
 soundfile
 qrcode
+twilio

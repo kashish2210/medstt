@@ -14,6 +14,30 @@ from .forms import (
 def register_view(request):
     """Main registration page with user type selection"""
     return render(request, 'register.html')
+def register(request):
+    """OTP verification entry point: collect phone number and send OTP."""
+    if request.method == "POST":
+        # Generate OTP
+        otp = random.randint(1000, 9999)
+        
+        # Create a temporary profile for OTP validation
+        profile, _ = Profile.objects.get_or_create(phone_number=request.POST['phone_number'])
+        profile.otp = f'{otp}'
+        profile.save()
+
+        # Send OTP via message or WhatsApp
+        messagehandler = MessageHandler(request.POST['phone_number'], otp)
+        if request.POST['methodOtp'] == "methodOtpWhatsapp":
+            messagehandler.send_otp_via_whatsapp()
+        else:
+            messagehandler.send_otp_via_message()
+
+        # Set a cookie for OTP validity and redirect to OTP verification
+        red = redirect(f'/otp/{profile.uid}/')  # Redirect to OTP page
+        red.set_cookie("can_otp_enter", "True", max_age=600)  # 10-minute validity
+        return red
+
+    return render(request, 'register.html')
 
 def hospital_register(request):
     """Hospital registration view"""
