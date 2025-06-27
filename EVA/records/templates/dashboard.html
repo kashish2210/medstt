@@ -1,181 +1,143 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dashboard - Hospital Management</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Dashboard - Hospital Management</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet" />
+  <style>
+    * { margin:0; padding:0; box-sizing:border-box; font-family:'Poppins',sans-serif; }
+    body { min-height:100vh; background: linear-gradient(135deg,#4e54c8,#8f94fb); color:#fff; }
+    nav { display:flex; justify-content:space-between; align-items:center; padding:20px; background:rgba(0,0,0,0.2); }
+    nav h2 { font-size:1.5rem; }
+    nav p { font-size:1rem; opacity:0.8; }
+    main { padding:20px; max-width:1200px; margin:auto; }
+    h1 { font-size:2rem; margin-bottom:20px; text-align:center; }
+    .section { background:rgba(255,255,255,0.1); border-radius:8px; padding:20px; margin-bottom:20px; }
+    .section h2 { font-size:1.4rem; margin-bottom:10px; border-bottom:1px solid rgba(255,255,255,0.3); padding-bottom:5px; }
+    .section h3 { font-size:1.2rem; margin-bottom:8px; }
+    .section p, .section li { font-size:1rem; line-height:1.5; }
+    ul { list-style: disc inside; margin-left:20px; }
+    /* Animated Blobs */
+    .blob { position:fixed; width:300px; height:300px; background:rgba(255,255,255,0.1); border-radius:50%; animation: float 10s infinite; z-index:0; }
+    .blob:nth-child(1) { bottom:-100px; left:-100px; animation-delay:0s; }
+    .blob:nth-child(2) { top:-100px; right:-150px; animation-delay:3s; }
+    @keyframes float {
+      0%,100% { transform:translateY(0) scale(1); }
+      50% { transform:translateY(-20px) scale(1.1); }
+    }
+    /* Responsive */
+    @media(max-width:768px){
+      nav { flex-direction:column; text-align:center; }
+      .blob { width:200px; height:200px; }
+    }
+  </style>
 </head>
 <body>
-    <!-- Navigation Bar -->
-    <nav>
-        <div>
-            <h2>Welcome {{ user.get_full_name|default:user.username }}!</h2>
-            <p>User Type: {{ user.get_user_type_display }}</p>
-        </div>
-        {% comment %} <div>
-            <a href="{% url 'logout' %}">Logout</a>
-        </div> {% endcomment %}
-    </nav>
-    
-    <main>
-        <h1>Dashboard</h1>
-        
-        {% if user.user_type == 'hospital' %}
-            <h2>Hospital Dashboard</h2>
-            <div>
-                <h3>Hospital Information</h3>
-                <p><strong>Name:</strong> {{ hospital.name }}</p>
-                <p><strong>Address:</strong> {{ hospital.address }}</p>
-                <p><strong>Hospital Code:</strong> {{ hospital.hospital_code }}</p>
-            </div>
-            
-            <div>
-                <h3>Doctors ({{ doctors.count }})</h3>
-                {% if doctors %}
-                    <ul>
-                        {% for doctor in doctors %}
-                            <li>Dr. {{ doctor.name }} - {{ doctor.speciality }} (Room: {{ doctor.room_clinic_number }})</li>
-                        {% endfor %}
-                    </ul>
-                {% else %}
-                    <p>No doctors registered yet.</p>
-                {% endif %}
-            </div>
-            
-            <div>
-                <h3>Nurses ({{ nurses.count }})</h3>
-                {% if nurses %}
-                    <ul>
-                        {% for nurse in nurses %}
-                            <li>{{ nurse.name }} - Age: {{ nurse.age }}</li>
-                        {% endfor %}
-                    </ul>
-                {% else %}
-                    <p>No nurses registered yet.</p>
-                {% endif %}
-            </div>
-            
-            <div>
-                <h3>Rooms ({{ rooms.count }})</h3>
-                {% if rooms %}
-                    <ul>
-                        {% for room in rooms %}
-                            <li>Room {{ room.room_number }} - Floor {{ room.floor }} ({{ room.room_type }}) - {% if room.is_occupied %}Occupied{% else %}Available{% endif %}</li>
-                        {% endfor %}
-                    </ul>
-                {% else %}
-                    <p>No rooms added yet.</p>
-                {% endif %}
-            </div>
-            
-        {% elif user.user_type == 'doctor' %}
-            <h2>Doctor Dashboard</h2>
-            <div>
-                <h3>Doctor Information</h3>
-                <p><strong>Name:</strong> Dr. {{ doctor.name }}</p>
-                <p><strong>Speciality:</strong> {{ doctor.speciality }}</p>
-                <p><strong>Room/Clinic:</strong> {{ doctor.room_clinic_number }}</p>
-                {% if doctor.hospital %}
-                    <p><strong>Hospital:</strong> {{ doctor.hospital.name }}</p>
-                {% endif %}
-            </div>
-            
-            <div>
-                <h3>Current Queue ({{ queues.count }})</h3>
-                {% if queues %}
-                    <ul>
-                        {% for queue in queues %}
-                            <li>Queue #{{ queue.queue_number }} - {{ queue.patient.name }} (Added: {{ queue.date_added }})</li>
-                        {% endfor %}
-                    </ul>
-                {% else %}
-                    <p>No patients in queue.</p>
-                {% endif %}
-            </div>
-            
-            <div>
-                <h3>Medical Cases ({{ cases.count }})</h3>
-                {% if cases %}
-                    <ul>
-                        {% for case in cases %}
-                            <li>{{ case.case_title }} - {{ case.patient.name }} ({{ case.get_status_display }})</li>
-                        {% endfor %}
-                    </ul>
-                {% else %}
-                    <p>No medical cases yet.</p>
-                {% endif %}
-            </div>
-            
-        {% elif user.user_type == 'nurse' %}
-            <h2>Nurse Dashboard</h2>
-            <div>
-                <h3>Nurse Information</h3>
-                <p><strong>Name:</strong> {{ nurse.name }}</p>
-                <p><strong>Age:</strong> {{ nurse.age }}</p>
-                {% if nurse.hospital %}
-                    <p><strong>Hospital:</strong> {{ nurse.hospital.name }}</p>
-                {% endif %}
-            </div>
-            
-            <div>
-                <h3>Quick Actions</h3>
-                <ul>
-                    <li>Manage Patient Records</li>
-                    <li>Update Room Status</li>
-                    <li>Assist Doctors</li>
-                </ul>
-            </div>
-            
-        {% elif user.user_type == 'patient' %}
-            <h2>Patient Dashboard</h2>
-            <div>
-                <h3>Patient Information</h3>
-                <p><strong>Name:</strong> {{ patient.name }}</p>
-                <p><strong>Age:</strong> {{ patient.age }}</p>
-                <p><strong>Gender:</strong> {{ patient.get_gender_display }}</p>
-                <p><strong>Medicine Days Remaining:</strong> {{ patient.medicine_countdown }}</p>
-            </div>
-            
-            <div>
-                <h3>Current Health Status</h3>
-                <div>
-                    <h4>Problems/Diseases:</h4>
-                    <p>{{ patient.problem_diseases }}</p>
-                </div>
-                {% if patient.medicines_consumed %}
-                    <div>
-                        <h4>Current Medicines:</h4>
-                        <p>{{ patient.medicines_consumed }}</p>
-                    </div>
-                {% endif %}
-            </div>
-            
-            <div>
-                <h3>Appointments in Queue ({{ queues.count }})</h3>
-                {% if queues %}
-                    <ul>
-                        {% for queue in queues %}
-                            <li>Dr. {{ queue.doctor.name }} - Queue #{{ queue.queue_number }} ({{ queue.date_added }})</li>
-                        {% endfor %}
-                    </ul>
-                {% else %}
-                    <p>No appointments in queue.</p>
-                {% endif %}
-            </div>
-            
-            <div>
-                <h3>Medical Cases ({{ cases.count }})</h3>
-                {% if cases %}
-                    <ul>
-                        {% for case in cases %}
-                            <li>{{ case.case_title }} - Dr. {{ case.doctor.name }} ({{ case.get_status_display }})</li>
-                        {% endfor %}
-                    </ul>
-                {% else %}
-                    <p>No medical cases yet.</p>
-                {% endif %}
-            </div>
-        {% endif %}
-    </main>
+  <div class="blob"></div>
+  <div class="blob"></div>
+  
+  <nav>
+    <div>
+      <h2>Welcome {{ user.get_full_name|default:user.username }}!</h2>
+      <p>User Type: {{ user.get_user_type_display }}</p>
+    </div>
+    <!-- Optional Logout -->
+    <!-- <div><a href="{% url 'logout' %}" style="color:#fff">Logout</a></div> -->
+  </nav>
+  
+  <main>
+    <h1>Dashboard</h1>
+
+    {% if user.user_type == 'hospital' %}
+      <section class="section">
+        <h2>Hospital Information</h2>
+        <p><strong>Name:</strong> {{ hospital.name }}</p>
+        <p><strong>Address:</strong> {{ hospital.address }}</p>
+        <p><strong>Hospital Code:</strong> {{ hospital.hospital_code }}</p>
+      </section>
+      <section class="section">
+        <h2>Doctors ({{ doctors.count }})</h2>
+        {% if doctors %}
+          <ul>{% for d in doctors %}<li>Dr. {{ d.name }} — {{ d.speciality }} (Room {{ d.room_clinic_number }})</li>{% endfor %}</ul>
+        {% else %}<p>No doctors registered yet.</p>{% endif %}
+      </section>
+      <section class="section">
+        <h2>Nurses ({{ nurses.count }})</h2>
+        {% if nurses %}
+          <ul>{% for n in nurses %}<li>{{ n.name }}, Age {{ n.age }}</li>{% endfor %}</ul>
+        {% else %}<p>No nurses registered yet.</p>{% endif %}
+      </section>
+      <section class="section">
+        <h2>Rooms ({{ rooms.count }})</h2>
+        {% if rooms %}
+          <ul>{% for r in rooms %}<li>Room {{ r.room_number }}, Floor {{ r.floor }}, {{ r.room_type }} — {% if r.is_occupied %}Occupied{% else %}Available{% endif %}</li>{% endfor %}</ul>
+        {% else %}<p>No rooms added yet.</p>{% endif %}
+      </section>
+
+    {% elif user.user_type == 'doctor' %}
+      <section class="section">
+        <h2>Doctor Information</h2>
+        <p><strong>Name:</strong> Dr. {{ doctor.name }}</p>
+        <p><strong>Speciality:</strong> {{ doctor.speciality }}</p>
+        <p><strong>Room/Clinic:</strong> {{ doctor.room_clinic_number }}</p>
+        {% if doctor.hospital %}<p><strong>Hospital:</strong> {{ doctor.hospital.name }}</p>{% endif %}
+      </section>
+      <section class="section">
+        <h2>Current Queue ({{ queues.count }})</h2>
+        {% if queues %}
+          <ul>{% for q in queues %}<li>#{{ q.queue_number }} — {{ q.patient.name }} (Added: {{ q.date_added }})</li>{% endfor %}</ul>
+        {% else %}<p>No patients in queue.</p>{% endif %}
+      </section>
+      <section class="section">
+        <h2>Medical Cases ({{ cases.count }})</h2>
+        {% if cases %}
+          <ul>{% for c in cases %}<li>{{ c.case_title }} — {{ c.patient.name }} ({{ c.get_status_display }})</li>{% endfor %}</ul>
+        {% else %}<p>No medical cases yet.</p>{% endif %}
+      </section>
+
+    {% elif user.user_type == 'nurse' %}
+      <section class="section">
+        <h2>Nurse Information</h2>
+        <p><strong>Name:</strong> {{ nurse.name }}</p>
+        <p><strong>Age:</strong> {{ nurse.age }}</p>
+        {% if nurse.hospital %}<p><strong>Hospital:</strong> {{ nurse.hospital.name }}</p>{% endif %}
+      </section>
+      <section class="section">
+        <h2>Quick Actions</h2>
+        <ul>
+          <li>Manage Patient Records</li>
+          <li>Update Room Status</li>
+          <li>Assist Doctors</li>
+        </ul>
+      </section>
+
+    {% elif user.user_type == 'patient' %}
+      <section class="section">
+        <h2>Patient Information</h2>
+        <p><strong>Name:</strong> {{ patient.name }}</p>
+        <p><strong>Age:</strong> {{ patient.age }}</p>
+        <p><strong>Gender:</strong> {{ patient.get_gender_display }}</p>
+        <p><strong>Medicine Days Remaining:</strong> {{ patient.medicine_countdown }}</p>
+      </section>
+      <section class="section">
+        <h2>Health Status</h2>
+        <p><strong>Problems/Diseases:</strong> {{ patient.problem_diseases }}</p>
+        {% if patient.medicines_consumed %}<p><strong>Current Medicines:</strong> {{ patient.medicines_consumed }}</p>{% endif %}
+      </section>
+      <section class="section">
+        <h2>Appointments in Queue ({{ queues.count }})</h2>
+        {% if queues %}
+          <ul>{% for q in queues %}<li>Dr. {{ q.doctor.name }} — #{{ q.queue_number }} ({{ q.date_added }})</li>{% endfor %}</ul>
+        {% else %}<p>No appointments in queue.</p>{% endif %}
+      </section>
+      <section class="section">
+        <h2>Medical Cases ({{ cases.count }})</h2>
+        {% if cases %}
+          <ul>{% for c in cases %}<li>{{ c.case_title }} — Dr. {{ c.doctor.name }} ({{ c.get_status_display }})</li>{% endfor %}</ul>
+        {% else %}<p>No medical cases yet.</p>{% endif %}
+      </section>
+    {% endif %}
+  </main>
 </body>
 </html>

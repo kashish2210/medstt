@@ -1,58 +1,277 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Login - Hospital Management</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Hospital Management System</title>
+  <link href="https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css" rel="stylesheet"/>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Segoe UI', sans-serif;
+    }
+
+    body {
+      background: linear-gradient(to right, #4e54c8, #8f94fb);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+    }
+
+    .container {
+      background-color: #fff;
+      width: 900px;
+      height: 550px;
+      display: flex;
+      position: relative;
+      overflow: hidden;
+      border-radius: 20px;
+      box-shadow: 0 0 20px rgba(0,0,0,0.1);
+    }
+
+    .form-box {
+      width: 50%;
+      padding: 40px;
+      transition: 0.5s;
+    }
+
+    .form-box h1 {
+      margin-bottom: 20px;
+      font-size: 28px;
+      color: #4e54c8;
+      text-align: center;
+    }
+
+    .input-box {
+      position: relative;
+      margin-bottom: 20px;
+    }
+
+    .input-box input,
+    .input-box select {
+      width: 100%;
+      padding: 12px;
+      padding-right: 40px;
+      border: 1px solid #ccc;
+      border-radius: 8px;
+      outline: none;
+    }
+
+    .input-box i {
+      position: absolute;
+      right: 15px;
+      top: 50%;
+      transform: translateY(-50%);
+      color: #4e54c8;
+    }
+
+    .forgot-link {
+      text-align: right;
+      margin-bottom: 15px;
+    }
+
+    .forgot-link a {
+      text-decoration: none;
+      font-size: 14px;
+      color: #4e54c8;
+    }
+
+    .btn {
+      width: 100%;
+      padding: 12px;
+      border: none;
+      background-color: #4e54c8;
+      color: #fff;
+      border-radius: 8px;
+      cursor: pointer;
+      font-size: 16px;
+      margin-bottom: 10px;
+    }
+
+    .btn:hover {
+      background-color: #3b40a4;
+    }
+
+    .social-icons {
+      display: flex;
+      justify-content: center;
+      gap: 15px;
+      margin-top: 10px;
+    }
+
+    .social-icons a {
+      font-size: 20px;
+      color: #4e54c8;
+    }
+
+    .toggle-box {
+      position: absolute;
+      top: 0;
+      right: 0;
+      width: 50%;
+      height: 100%;
+      background: linear-gradient(to right, #4e54c8, #8f94fb);
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      text-align: center;
+      padding: 40px;
+      color: #fff;
+      transition: 0.5s;
+    }
+
+    .toggle-box h1 {
+      margin-bottom: 10px;
+      font-size: 24px;
+    }
+
+    .toggle-box p {
+      font-size: 14px;
+      margin-bottom: 20px;
+    }
+
+    .register {
+      position: absolute;
+      left: 100%;
+      top: 0;
+      height: 100%;
+      width: 50%;
+      background-color: #fff;
+      transition: 0.5s;
+    }
+
+    .container.active .login {
+      transform: translateX(-100%);
+    }
+
+    .container.active .register {
+      transform: translateX(-100%);
+    }
+
+    .container.active .toggle-box {
+      right: 50%;
+    }
+
+    @media screen and (max-width: 768px) {
+      .container {
+        flex-direction: column;
+        height: auto;
+      }
+
+      .form-box,
+      .register,
+      .toggle-box {
+        width: 100%;
+        position: relative;
+        transform: none !important;
+      }
+
+      .toggle-box {
+        order: -1;
+        background: #4e54c8;
+      }
+    }
+  </style>
 </head>
 <body>
-    <h1>Hospital Management System</h1>
-    <h2>Login</h2>
-    
-    {% if messages %}
-        <div>
-            {% for message in messages %}
-                <p>{{ message }}</p>
-            {% endfor %}
+  <div class="container" id="container">
+    <!-- Login Form -->
+    <div class="form-box login">
+      <form>
+        <h1>Hospital Management System</h1>
+
+        <div class="input-box">
+          <input type="text" placeholder="Username" required />
+          <i class="bx bxs-user"></i>
         </div>
-    {% endif %}
-    
-    <form method="post">
-        {% csrf_token %}
-        <div>
-            <label for="{{ form.username.id_for_label }}">Username:</label>
-            {{ form.username }}
-            {% if form.username.errors %}
-                <span>{{ form.username.errors }}</span>
-            {% endif %}
+
+        <div class="input-box">
+          <input type="password" placeholder="Password" required />
+          <i class="bx bxs-lock-alt"></i>
         </div>
-        
-        <div>
-            <label for="{{ form.password.id_for_label }}">Password:</label>
-            {{ form.password }}
-            {% if form.password.errors %}
-                <span>{{ form.password.errors }}</span>
-            {% endif %}
+
+        <div class="input-box">
+          <select required>
+            <option value="" disabled selected>Select Role</option>
+            <option value="admin">Hospital Admin</option>
+            <option value="doctor">Doctor</option>
+            <option value="nurse">Nurse</option>
+            <option value="patient">Patient</option>
+          </select>
+          <i class="bx bx-user-pin"></i>
         </div>
-        
-        {% if form.non_field_errors %}
-            <div>{{ form.non_field_errors }}</div>
-        {% endif %}
-        
-        <button type="submit">Login</button>
-    </form>
-    
-    <div>
-        <h3>Login Options:</h3>
-        <ul>
-            <li>Hospital Admin</li>
-            <li>Doctor</li>
-            <li>Nurse</li>
-            <li>Patient</li>
-        </ul>
-        <p>Use your registered username and password to login</p>
+
+        <div class="forgot-link">
+          <a href="#">Forgot Password?</a>
+        </div>
+
+        <button type="submit" class="btn">Login</button>
+
+        <p>or login with social platforms</p>
+        <div class="social-icons">
+          <a href="#"><i class="bx bxl-google"></i></a>
+          <a href="#"><i class="bx bxl-facebook"></i></a>
+          <a href="#"><i class="bx bxl-github"></i></a>
+          <a href="#"><i class="bx bxl-linkedin"></i></a>
+        </div>
+      </form>
     </div>
-    
-    <p>Don't have an account? <a href="{% url 'register' %}">Register here</a></p>
+
+    <!-- Register Form -->
+    <div class="form-box register">
+      <form>
+        <h1>Register</h1>
+
+        <div class="input-box">
+          <input type="text" placeholder="Username" required />
+          <i class="bx bxs-user"></i>
+        </div>
+
+        <div class="input-box">
+          <input type="email" placeholder="Email" required />
+          <i class="bx bxs-envelope"></i>
+        </div>
+
+        <div class="input-box">
+          <input type="password" placeholder="Password" required />
+          <i class="bx bxs-lock-alt"></i>
+        </div>
+
+        <button type="submit" class="btn">Register</button>
+
+        <p>or register with social platforms</p>
+        <div class="social-icons">
+          <a href="#"><i class="bx bxl-google"></i></a>
+          <a href="#"><i class="bx bxl-facebook"></i></a>
+          <a href="#"><i class="bx bxl-github"></i></a>
+          <a href="#"><i class="bx bxl-linkedin"></i></a>
+        </div>
+      </form>
+    </div>
+
+    <!-- Toggle Box -->
+    <div class="toggle-box">
+      <h1>Hello, Welcome!</h1>
+      <p>Don't have an account?</p>
+      <button class="btn" id="registerBtn">Register</button>
+      <br />
+      <p>Already have an account?</p>
+      <button class="btn" id="loginBtn">Login</button>
+    </div>
+  </div>
+
+  <script>
+    const container = document.getElementById('container');
+    document.getElementById('registerBtn').addEventListener('click', () => {
+      container.classList.add('active');
+    });
+    document.getElementById('loginBtn').addEventListener('click', () => {
+      container.classList.remove('active');
+    });
+  </script>
 </body>
 </html>

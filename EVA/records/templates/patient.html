@@ -1,127 +1,220 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Patient Registration</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Patient Registration</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet"/>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Poppins', sans-serif; }
+    body {
+      background: linear-gradient(135deg, #1e1e2f, #2e2e3f);
+      color: #fff;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      padding: 20px;
+    }
+    .container {
+      background: rgba(255, 255, 255, 0.06);
+      padding: 40px;
+      border-radius: 16px;
+      width: 100%;
+      max-width: 700px;
+      box-shadow: 0 0 30px rgba(0, 0, 0, 0.4);
+    }
+    h1 {
+      text-align: center;
+      margin-bottom: 30px;
+      font-size: 2rem;
+    }
+    form > div {
+      margin-bottom: 20px;
+    }
+    label {
+      display: block;
+      margin-bottom: 6px;
+      font-weight: 600;
+      color: #ddd;
+    }
+    input, textarea, select {
+      width: 100%;
+      padding: 10px 14px;
+      border-radius: 8px;
+      border: none;
+      background: rgba(255, 255, 255, 0.1);
+      color: #fff;
+      font-size: 1rem;
+      resize: vertical;
+    }
+    input:focus, textarea:focus, select:focus {
+      outline: none;
+      background: rgba(255, 255, 255, 0.15);
+    }
+    span {
+      display: block;
+      margin-top: 4px;
+      color: #f88;
+      font-size: 0.9rem;
+    }
+    .messages {
+      margin-bottom: 20px;
+      padding: 10px 15px;
+      background: #333;
+      border-left: 5px solid #4e9af1;
+      border-radius: 6px;
+    }
+    button {
+      width: 100%;
+      padding: 12px;
+      font-size: 1rem;
+      background: #4e9af1;
+      color: white;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: background 0.3s ease;
+    }
+    button:hover {
+      background: #3582e2;
+    }
+    .links {
+      margin-top: 20px;
+      text-align: center;
+    }
+    .links a {
+      color: #9ac9ff;
+      text-decoration: none;
+      margin: 0 10px;
+      font-size: 0.95rem;
+    }
+    .links a:hover {
+      text-decoration: underline;
+    }
+  </style>
 </head>
 <body>
+  <div class="container">
     <h1>Patient Registration</h1>
-    
+
     {% if messages %}
-        <div>
-            {% for message in messages %}
-                <p>{{ message }}</p>
-            {% endfor %}
-        </div>
+      <div class="messages">
+        {% for message in messages %}
+          <p>{{ message }}</p>
+        {% endfor %}
+      </div>
     {% endif %}
-    
+
     <form method="post">
-        {% csrf_token %}
-        <div>
-            <label for="{{ form.username.id_for_label }}">Username:</label>
-            {{ form.username }}
-            {% if form.username.errors %}
-                <span>{{ form.username.errors }}</span>
-            {% endif %}
-        </div>
-        
-        <div>
-            <label for="{{ form.email.id_for_label }}">Email:</label>
-            {{ form.email }}
-            {% if form.email.errors %}
-                <span>{{ form.email.errors }}</span>
-            {% endif %}
-        </div>
-        
-        <div>
-            <label for="{{ form.password.id_for_label }}">Password:</label>
-            {{ form.password }}
-            {% if form.password.errors %}
-                <span>{{ form.password.errors }}</span>
-            {% endif %}
-        </div>
-        
-        <div>
-            <label for="{{ form.confirm_password.id_for_label }}">Confirm Password:</label>
-            {{ form.confirm_password }}
-            {% if form.confirm_password.errors %}
-                <span>{{ form.confirm_password.errors }}</span>
-            {% endif %}
-        </div>
-        
-        <div>
-            <label for="{{ form.name.id_for_label }}">Full Name:</label>
-            {{ form.name }}
-            {% if form.name.errors %}
-                <span>{{ form.name.errors }}</span>
-            {% endif %}
-        </div>
-        
-        <div>
-            <label for="{{ form.age.id_for_label }}">Age:</label>
-            {{ form.age }}
-            {% if form.age.errors %}
-                <span>{{ form.age.errors }}</span>
-            {% endif %}
-        </div>
-        
-        <div>
-            <label for="{{ form.phone.id_for_label }}">Phone:</label>
-            {{ form.phone }}
-            {% if form.phone.errors %}
-                <span>{{ form.phone.errors }}</span>
-            {% endif %}
-        </div>
-        
-        <div>
-            <label for="{{ form.gender.id_for_label }}">Gender:</label>
-            {{ form.gender }}
-            {% if form.gender.errors %}
-                <span>{{ form.gender.errors }}</span>
-            {% endif %}
-        </div>
-        
-        <div>
-            <label for="{{ form.problem_diseases.id_for_label }}">Current Problems/Diseases:</label>
-            {{ form.problem_diseases }}
-            {% if form.problem_diseases.errors %}
-                <span>{{ form.problem_diseases.errors }}</span>
-            {% endif %}
-        </div>
-        
-        <div>
-            <label for="{{ form.medicines_consumed.id_for_label }}">Current Medicines:</label>
-            {{ form.medicines_consumed }}
-            {% if form.medicines_consumed.errors %}
-                <span>{{ form.medicines_consumed.errors }}</span>
-            {% endif %}
-        </div>
-        
-        <div>
-            <label for="{{ form.medicine_countdown.id_for_label }}">Medicine Days Remaining:</label>
-            {{ form.medicine_countdown }}
-            {% if form.medicine_countdown.errors %}
-                <span>{{ form.medicine_countdown.errors }}</span>
-            {% endif %}
-        </div>
-        
-        <div>
-            <label for="{{ form.visibility.id_for_label }}">Who can see your medical info?</label>
-            {{ form.visibility }}
-            {% if form.visibility.errors %}
-                <span>{{ form.visibility.errors }}</span>
-            {% endif %}
-        </div>
-        
-        {% if form.non_field_errors %}
-            <div>{{ form.non_field_errors }}</div>
+      {% csrf_token %}
+      <div>
+        <label for="{{ form.username.id_for_label }}">Username</label>
+        {{ form.username }}
+        {% if form.username.errors %}
+          <span>{{ form.username.errors }}</span>
         {% endif %}
-        
-        <button type="submit">Register Patient</button>
+      </div>
+
+      <div>
+        <label for="{{ form.email.id_for_label }}">Email</label>
+        {{ form.email }}
+        {% if form.email.errors %}
+          <span>{{ form.email.errors }}</span>
+        {% endif %}
+      </div>
+
+      <div>
+        <label for="{{ form.password.id_for_label }}">Password</label>
+        {{ form.password }}
+        {% if form.password.errors %}
+          <span>{{ form.password.errors }}</span>
+        {% endif %}
+      </div>
+
+      <div>
+        <label for="{{ form.confirm_password.id_for_label }}">Confirm Password</label>
+        {{ form.confirm_password }}
+        {% if form.confirm_password.errors %}
+          <span>{{ form.confirm_password.errors }}</span>
+        {% endif %}
+      </div>
+
+      <div>
+        <label for="{{ form.name.id_for_label }}">Full Name</label>
+        {{ form.name }}
+        {% if form.name.errors %}
+          <span>{{ form.name.errors }}</span>
+        {% endif %}
+      </div>
+
+      <div>
+        <label for="{{ form.age.id_for_label }}">Age</label>
+        {{ form.age }}
+        {% if form.age.errors %}
+          <span>{{ form.age.errors }}</span>
+        {% endif %}
+      </div>
+
+      <div>
+        <label for="{{ form.phone.id_for_label }}">Phone</label>
+        {{ form.phone }}
+        {% if form.phone.errors %}
+          <span>{{ form.phone.errors }}</span>
+        {% endif %}
+      </div>
+
+      <div>
+        <label for="{{ form.gender.id_for_label }}">Gender</label>
+        {{ form.gender }}
+        {% if form.gender.errors %}
+          <span>{{ form.gender.errors }}</span>
+        {% endif %}
+      </div>
+
+      <div>
+        <label for="{{ form.problem_diseases.id_for_label }}">Current Problems/Diseases</label>
+        {{ form.problem_diseases }}
+        {% if form.problem_diseases.errors %}
+          <span>{{ form.problem_diseases.errors }}</span>
+        {% endif %}
+      </div>
+
+      <div>
+        <label for="{{ form.medicines_consumed.id_for_label }}">Current Medicines</label>
+        {{ form.medicines_consumed }}
+        {% if form.medicines_consumed.errors %}
+          <span>{{ form.medicines_consumed.errors }}</span>
+        {% endif %}
+      </div>
+
+      <div>
+        <label for="{{ form.medicine_countdown.id_for_label }}">Medicine Days Remaining</label>
+        {{ form.medicine_countdown }}
+        {% if form.medicine_countdown.errors %}
+          <span>{{ form.medicine_countdown.errors }}</span>
+        {% endif %}
+      </div>
+
+      <div>
+        <label for="{{ form.visibility.id_for_label }}">Who can see your medical info?</label>
+        {{ form.visibility }}
+        {% if form.visibility.errors %}
+          <span>{{ form.visibility.errors }}</span>
+        {% endif %}
+      </div>
+
+      {% if form.non_field_errors %}
+        <div><span>{{ form.non_field_errors }}</span></div>
+      {% endif %}
+
+      <button type="submit">Register Patient</button>
     </form>
-    
-    <p><a href="{% url 'register' %}">Back to Registration Options</a></p>
-    <p><a href="{% url 'login' %}">Already have an account? Login</a></p>
+
+    <div class="links">
+      <p><a href="{% url 'register' %}">Back to Registration Options</a></p>
+      <p><a href="{% url 'login' %}">Already have an account? Login</a></p>
+    </div>
+  </div>
 </body>
 </html>

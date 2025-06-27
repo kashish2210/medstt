@@ -1,26 +1,96 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Hospital Management - Register</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Hospital Management - Register</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet"/>
+  <style>
+    * {
+      margin: 0; padding: 0;
+      box-sizing: border-box;
+      font-family: 'Poppins', sans-serif;
+    }
+    body {
+      background: linear-gradient(135deg, #1e1e2f, #2e2e3f);
+      color: #fff;
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 30px;
+    }
+    .container {
+      background: rgba(255, 255, 255, 0.06);
+      padding: 40px;
+      border-radius: 16px;
+      width: 100%;
+      max-width: 600px;
+      box-shadow: 0 0 30px rgba(0, 0, 0, 0.3);
+      text-align: center;
+    }
+    h1 {
+      font-size: 2rem;
+      margin-bottom: 10px;
+      color: #4ecdc4;
+    }
+    h2 {
+      font-size: 1.3rem;
+      margin-bottom: 20px;
+      color: #eee;
+    }
+    h3 {
+      margin: 20px 0 10px;
+      font-weight: 500;
+      color: #ccc;
+    }
+    ul {
+      list-style: none;
+      padding: 0;
+    }
+    li {
+      margin: 10px 0;
+    }
+    a {
+      text-decoration: none;
+      padding: 12px 24px;
+      border-radius: 10px;
+      background: #4ecdc4;
+      color: #111;
+      font-weight: 600;
+      display: inline-block;
+      transition: background 0.3s ease;
+    }
+    a:hover {
+      background: #34b8b0;
+    }
+    .login-link {
+      margin-top: 30px;
+      font-size: 0.95rem;
+      color: #bbb;
+    }
+    .login-link a {
+      color: #9ac9ff;
+      text-decoration: underline;
+    }
+  </style>
 </head>
 <body>
+  <div class="container">
     <h1>Hospital Management System</h1>
     <h2>Choose Registration Type</h2>
-    
-    <div>
-        <h3>Select your role to register:</h3>
-        <ul>
-            <li><a href="{% url 'hospital_register' %}">Register as Hospital</a></li>
-            <li><a href="{% url 'doctor_register' %}">Register as Doctor</a></li>
-            <li><a href="{% url 'nurse_register' %}">Register as Nurse</a></li>
-            <li><a href="{% url 'patient_register' %}">Register as Patient</a></li>
-        </ul>
+
+    <h3>Select your role to register:</h3>
+    <ul>
+      <li><a href="{% url 'hospital_register' %}">Register as Hospital</a></li>
+      <li><a href="{% url 'doctor_register' %}">Register as Doctor</a></li>
+      <li><a href="{% url 'nurse_register' %}">Register as Nurse</a></li>
+      <li><a href="{% url 'patient_register' %}">Register as Patient</a></li>
+    </ul>
+
+    <div class="login-link">
+      <p>Already have an account? <a href="{% url 'login' %}">Login here</a></p>
     </div>
-    
-    <div>
-        <p>Already have an account? <a href="{% url 'login' %}">Login here</a></p>
-    </div>
+  </div>
 </body>
 </html>

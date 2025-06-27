@@ -11,6 +11,7 @@
       padding: 0;
       box-sizing: border-box;
     }
+
     html, body {
       height: 100%;
       font-family: 'Poppins', sans-serif;
@@ -92,7 +93,6 @@
       margin-bottom: 20px;
     }
 
-    /* From Uiverse.io by Gaurav-WebDev */
     .button {
       height: 50px;
       width: 200px;
@@ -104,6 +104,7 @@
       border-radius: 30px;
       color: #333;
       transition: all 0.5s ease-in-out;
+      font-size: 16px;
     }
 
     .btn-txt {
@@ -144,14 +145,6 @@
   </style>
 </head>
 <body>
-<<<<<<< Updated upstream
-<<<<<<< Updated upstream
-    <h1>ESP32 Audio Recorder</h1>
-    <button onclick="startRecording()">Start Recording</button>
-    <button onclick="stopRecording()">Stop & Save</button>
-=======
-=======
->>>>>>> Stashed changes
 
   <!-- Animated Background RBCs -->
   <div class="rbc-background" id="rbcContainer"></div>
@@ -162,17 +155,16 @@
       <span class="medical-icon">⚕️</span>
       ESP32 Audio Recorder
     </h1>
+
     <div class="buttons">
       <button class="button type1" onclick="startRecording()"><span class="btn-txt">▶️ START</span></button>
       <button class="button type1" onclick="stopRecording()"><span class="btn-txt">⏹ SAVE</span></button>
     </div>
-<<<<<<< Updated upstream
->>>>>>> Stashed changes
-=======
->>>>>>> Stashed changes
+
     <p id="status">Status: Ready</p>
   </div>
 
+  <!-- Scripts -->
   <script>
     function startRecording() {
       document.getElementById("status").innerText = "Status: 🎧 Listening...";
@@ -182,6 +174,7 @@
       document.getElementById("status").innerText = "Status: Saved ✅";
     }
 
+    // RBC Animation Setup
     const rbcContainer = document.getElementById('rbcContainer');
     for (let i = 0; i < 50; i++) {
       const rbc = document.createElement('div');
