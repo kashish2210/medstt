@@ -1,29 +1,191 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-    <title>ESP32 Audio Recorder</title>
-    <script>
-        function startRecording() {
-            fetch('/esp32/start/')
-                .then(response => response.json())
-                .then(data => {
-                    document.getElementById("status").innerText = data.status;
-                });
-        }
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>ESP32 Audio Recorder</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet" />
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    html, body {
+      height: 100%;
+      font-family: 'Poppins', sans-serif;
+      overflow: hidden;
+      background-color: #057999;
+      color: white;
+    }
 
-        function stopRecording() {
-            fetch('/esp32/stop/')
-                .then(response => response.json())
-                .then(data => {
-                    document.getElementById("status").innerText = data.status;
-                });
-        }
-    </script>
+    .rbc-background {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      z-index: 0;
+      pointer-events: none;
+      perspective: 1000px;
+    }
+
+    .rbc {
+      position: absolute;
+      width: 60px;
+      height: 60px;
+      background: url('https://i.imgur.com/uhTQHVO.png') no-repeat center center / contain;
+      opacity: 0.85;
+      animation: floatRBC 20s infinite ease-in-out;
+      transform-style: preserve-3d;
+      filter: drop-shadow(0 0 6px rgba(255, 0, 0, 0.4));
+    }
+
+    @keyframes floatRBC {
+      0% {
+        transform: translate3d(0, 100vh, 0) rotateX(0deg) rotateY(0deg) rotateZ(0deg);
+      }
+      20% {
+        transform: translate3d(20vw, 80vh, 50px) rotateX(90deg) rotateY(90deg) rotateZ(90deg);
+      }
+      40% {
+        transform: translate3d(-25vw, 60vh, 200px) rotateX(180deg) rotateY(180deg) rotateZ(180deg);
+      }
+      60% {
+        transform: translate3d(15vw, 40vh, 100px) rotateX(270deg) rotateY(270deg) rotateZ(270deg);
+      }
+      80% {
+        transform: translate3d(-10vw, 20vh, 50px) rotateX(360deg) rotateY(360deg) rotateZ(360deg);
+      }
+      100% {
+        transform: translate3d(0, -120vh, 0) rotateX(450deg) rotateY(450deg) rotateZ(450deg);
+      }
+    }
+
+    .center-content {
+      position: relative;
+      z-index: 2;
+      text-align: center;
+      top: 50%;
+      transform: translateY(-50%);
+    }
+
+    h1 {
+      font-size: 2.5rem;
+      font-weight: 600;
+      margin-bottom: 20px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 15px;
+    }
+
+    .medical-icon {
+      font-size: 3rem;
+      color: white;
+    }
+
+    .buttons {
+      display: flex;
+      gap: 20px;
+      justify-content: center;
+      margin-bottom: 20px;
+    }
+
+    /* From Uiverse.io by Gaurav-WebDev */
+    .button {
+      height: 50px;
+      width: 200px;
+      position: relative;
+      background-color: transparent;
+      cursor: pointer;
+      border: 2px solid #252525;
+      overflow: hidden;
+      border-radius: 30px;
+      color: #333;
+      transition: all 0.5s ease-in-out;
+    }
+
+    .btn-txt {
+      z-index: 1;
+      font-weight: 800;
+      letter-spacing: 4px;
+    }
+
+    .type1::after {
+      content: "";
+      position: absolute;
+      left: 0;
+      top: 0;
+      transition: all 0.5s ease-in-out;
+      background-color: #333;
+      border-radius: 30px;
+      visibility: hidden;
+      height: 10px;
+      width: 10px;
+      z-index: -1;
+    }
+
+    .button:hover {
+      box-shadow: 1px 1px 200px #252525;
+      color: #fff;
+      border: none;
+    }
+
+    .type1:hover::after {
+      visibility: visible;
+      transform: scale(100) translateX(2px);
+    }
+
+    #status {
+      font-size: 1.1rem;
+      color: #0ad261;
+    }
+  </style>
 </head>
 <body>
+<<<<<<< Updated upstream
     <h1>ESP32 Audio Recorder</h1>
     <button onclick="startRecording()">Start Recording</button>
     <button onclick="stopRecording()">Stop & Save</button>
+=======
+
+  <!-- Animated Background RBCs -->
+  <div class="rbc-background" id="rbcContainer"></div>
+
+  <!-- Main UI Content -->
+  <div class="center-content">
+    <h1>
+      <span class="medical-icon">⚕️</span>
+      ESP32 Audio Recorder
+    </h1>
+    <div class="buttons">
+      <button class="button type1" onclick="startRecording()"><span class="btn-txt">▶️ START</span></button>
+      <button class="button type1" onclick="stopRecording()"><span class="btn-txt">⏹ SAVE</span></button>
+    </div>
+>>>>>>> Stashed changes
     <p id="status">Status: Ready</p>
+  </div>
+
+  <script>
+    function startRecording() {
+      document.getElementById("status").innerText = "Status: 🎧 Listening...";
+    }
+
+    function stopRecording() {
+      document.getElementById("status").innerText = "Status: Saved ✅";
+    }
+
+    const rbcContainer = document.getElementById('rbcContainer');
+    for (let i = 0; i < 50; i++) {
+      const rbc = document.createElement('div');
+      rbc.className = 'rbc';
+      rbc.style.left = `${Math.random() * 100}vw`;
+      rbc.style.top = `${Math.random() * 100}vh`;
+      rbc.style.animationDuration = `${15 + Math.random() * 10}s`;
+      rbc.style.animationDelay = `${Math.random() * 10}s`;
+      rbcContainer.appendChild(rbc);
+    }
+  </script>
 </body>
 </html>
