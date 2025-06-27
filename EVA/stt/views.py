@@ -52,5 +52,3 @@ def upload_audio(request):
     else:
         return JsonResponse({'status': 'error', 'message': 'Invalid request'}, status=400)
     
-def home(request):
-    return render(request, 'index.html')
