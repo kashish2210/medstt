@@ -9,10 +9,11 @@ from .models import Transcription
 import json
 import requests
 import time
+from accounts.models import MedicalCase, MedicalRecord
 
 
-def index(request):
-    return render(request, 'stt/stt.html')
+def index(request, medcaseid):
+    return render(request, 'stt/stt.html', {'medcaseid': medcaseid})
 
 
 
@@ -23,6 +24,7 @@ def upload_audio(request):
         identifier = request.POST['identifier']
         isFinal = True if request.POST['final'] == 'true' else False
         iter = audio_file.name.split(".")[0]
+        caseid = request.POST.get('case_id', None)
         print(type(request.POST['final']), request.POST['final'])
         upload_dir = os.path.join(settings.MEDIA_ROOT, 'uploads')
         os.makedirs(upload_dir, exist_ok=True)
@@ -41,6 +43,16 @@ def upload_audio(request):
             if response.ok:
                 result = response.json()
                 data = json.loads(result['response'])
+                med_case = MedicalCase.objects.get(id=caseid)
+                record = MedicalRecord.objects.create(
+                    record=data,
+                    medical_case=med_case
+                )
+
+                med_case.status = 'completed'
+                med_case.doctor_queue = None
+                med_case.save()
+               
                 print(data)
                 return JsonResponse(data, safe=True)
             else:

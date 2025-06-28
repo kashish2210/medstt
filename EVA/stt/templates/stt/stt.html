@@ -123,7 +123,7 @@
           iter_copy = iter
           mediaRecorder.stop()
           mediaRecorder.start()
-        }, 10 * 1000); 
+        }, 30 * 1000); 
 
         isRecording = true;
         recordBtn.textContent = 'Stop Recording';
@@ -150,6 +150,7 @@
       formData.append('audio', audioBlob, `${iter}.webm`);
       formData.append("identifier", identifier)
       formData.append("final", isFinal_copy)
+      formData.append("case_id", {{ medcaseid }});
       try {
         const response = await fetch('http://127.0.0.1:8000/stt/upload/', {
           method: 'POST',

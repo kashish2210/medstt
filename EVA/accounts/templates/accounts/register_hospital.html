@@ -1,0 +1,374 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Register Hospital</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <link href="https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css" rel="stylesheet" />
+  <style>
+    :root {
+      --bg-light: #f7f9fc;
+      --bg-dark: #1c1f2e;
+      --text-light: #333;
+      --text-dark: #f0f0f0;
+      --primary-light: #2e8b57;
+      --primary-dark: #90ee90;
+      --glass-bg: rgba(255, 255, 255, 0.15);
+      --glass-border: rgba(255, 255, 255, 0.3);
+    }
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      background: var(--bg-light);
+      color: var(--text-light);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      transition: 0.4s ease;
+      padding: 1rem;
+      position: relative;
+      overflow: hidden;
+    }
+    body.dark {
+      background: var(--bg-dark);
+      color: var(--text-dark);
+    }
+    
+    /* Spline 3D Background */
+    .spline-background {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      z-index: -1;
+      opacity: 0.8;
+    }
+    
+    .spline-background iframe {
+      width: 100%;
+      height: 100%;
+      border: none;
+      pointer-events: none;
+    }
+    
+    body.dark .spline-background {
+      opacity: 0.6;
+      filter: brightness(0.7) contrast(1.2);
+    }
+    
+    .theme-toggle {
+      position: absolute;
+      top: 20px;
+      right: 20px;
+      font-size: 24px;
+      background: none;
+      border: none;
+      cursor: pointer;
+      color: var(--primary-light);
+      z-index: 1000;
+      backdrop-filter: blur(10px);
+      padding: 10px;
+      border-radius: 50%;
+      background: rgba(255, 255, 255, 0.1);
+      transition: all 0.3s ease;
+    }
+    
+    .theme-toggle:hover {
+      background: rgba(255, 255, 255, 0.2);
+      transform: scale(1.1);
+    }
+    
+    body.dark .theme-toggle {
+      color: var(--primary-dark);
+      background: rgba(0, 0, 0, 0.2);
+    }
+    
+    body.dark .theme-toggle:hover {
+      background: rgba(0, 0, 0, 0.3);
+    }
+    
+    .form-container {
+      width: 100%;
+      max-width: 600px;
+      padding: 30px 40px;
+      border-radius: 20px;
+      background: var(--glass-bg);
+      box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37);
+      backdrop-filter: blur(15px);
+      -webkit-backdrop-filter: blur(15px);
+      border: 1px solid var(--glass-border);
+      overflow-y: auto;
+      max-height: 90vh;
+      position: relative;
+      z-index: 10;
+    }
+    
+    body.dark .form-container {
+      background: rgba(0, 0, 0, 0.3);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.5);
+    }
+    
+    h2 {
+      text-align: center;
+      margin-bottom: 20px;
+      font-size: 26px;
+      color: var(--primary-light);
+      text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+    }
+    
+    h2::before {
+      content: '🏥';
+      font-size: 30px;
+    }
+    
+    body.dark h2 {
+      color: var(--primary-dark);
+      text-shadow: 0 2px 4px rgba(255, 255, 255, 0.1);
+    }
+    
+    form label {
+      display: block;
+      margin-top: 15px;
+      font-weight: 500;
+      text-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+    }
+    
+    body.dark form label {
+      text-shadow: 0 1px 2px rgba(255, 255, 255, 0.1);
+    }
+    
+    form input,
+    form select,
+    form textarea {
+      width: 100%;
+      padding: 10px 12px;
+      margin-top: 5px;
+      border: 1px solid rgba(255, 255, 255, 0.3);
+      border-radius: 8px;
+      font-size: 15px;
+      background: rgba(255, 255, 255, 0.8);
+      backdrop-filter: blur(5px);
+      transition: all 0.3s ease;
+    }
+    
+    form textarea {
+      resize: vertical;
+      min-height: 80px;
+    }
+    
+    form input:focus,
+    form select:focus,
+    form textarea:focus {
+      outline: none;
+      border: 2px solid var(--primary-light);
+      background: rgba(255, 255, 255, 0.9);
+      transform: translateY(-1px);
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    }
+    
+    body.dark form input,
+    body.dark form select,
+    body.dark form textarea {
+      background: rgba(255, 255, 255, 0.15);
+      color: #fff;
+      border: 1px solid rgba(255, 255, 255, 0.2);
+    }
+    
+    body.dark form input::placeholder,
+    body.dark form textarea::placeholder {
+      color: rgba(255, 255, 255, 0.7);
+    }
+    
+    body.dark form input:focus,
+    body.dark form select:focus,
+    body.dark form textarea:focus {
+      border: 2px solid var(--primary-dark);
+      background: rgba(255, 255, 255, 0.2);
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+    }
+    
+    .submit-btn {
+      margin-top: 25px;
+      width: 100%;
+      background: linear-gradient(135deg, var(--primary-light), #66bb6a);
+      color: white;
+      border: none;
+      padding: 12px;
+      font-size: 16px;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      text-transform: uppercase;
+      font-weight: 600;
+      letter-spacing: 1px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+    }
+    
+    .submit-btn::before {
+      content: '🏥';
+      font-size: 18px;
+    }
+    
+    .submit-btn:hover {
+      background: linear-gradient(135deg, #228b22, #4caf50);
+      transform: translateY(-2px);
+      box-shadow: 0 6px 16px rgba(46, 139, 87, 0.4);
+    }
+    
+    body.dark .submit-btn {
+      background: linear-gradient(135deg, var(--primary-dark), #98fb98);
+      color: #333;
+    }
+    
+    body.dark .submit-btn:hover {
+      background: linear-gradient(135deg, #7fff7f, #adffad);
+      box-shadow: 0 6px 16px rgba(144, 238, 144, 0.4);
+    }
+    
+    @media (max-width: 600px) {
+      .form-container {
+        padding: 20px;
+        margin: 20px 10px;
+        max-width: 100%;
+      }
+      
+      .theme-toggle {
+        top: 15px;
+        right: 15px;
+        font-size: 20px;
+        padding: 8px;
+      }
+      
+      h2 {
+        font-size: 22px;
+      }
+    }
+    
+    /* Loading animation for Spline */
+    .spline-background::before {
+      content: '';
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      width: 50px;
+      height: 50px;
+      border: 3px solid rgba(46, 139, 87, 0.3);
+      border-top: 3px solid var(--primary-light);
+      border-radius: 50%;
+      animation: spin 1s linear infinite;
+      z-index: 1;
+    }
+    
+    .spline-background.loaded::before {
+      display: none;
+    }
+    
+    @keyframes spin {
+      0% { transform: translate(-50%, -50%) rotate(0deg); }
+      100% { transform: translate(-50%, -50%) rotate(360deg); }
+    }
+    
+    /* Form styling enhancements */
+    .form-row {
+      display: flex;
+      gap: 15px;
+      flex-wrap: wrap;
+    }
+    
+    .form-row > div {
+      flex: 1;
+      min-width: 200px;
+    }
+    
+    .required-field::after {
+      content: ' *';
+      color: #ff4444;
+    }
+  </style>
+</head>
+<body>
+  <!-- Spline 3D Background -->
+  <div class="spline-background" id="splineBackground">
+    <iframe src="https://my.spline.design/pillanddnaanimation-gi65Z0G6BdhdpI2O1PAGxnPd/" frameborder="0"></iframe>
+  </div>
+  
+  <button class="theme-toggle" id="themeToggle" title="Toggle Light/Dark Mode">
+    <i class="bx bxs-bulb"></i>
+  </button>
+  
+  <div class="form-container">
+    <h2>Hospital Registration</h2>
+    <form method="POST">
+      {% csrf_token %}
+      {{ form.as_p }}
+      <button type="submit" class="submit-btn">Register Hospital</button>
+    </form>
+  </div>
+  
+  <script>
+    const toggle = document.getElementById('themeToggle');
+    const splineBackground = document.getElementById('splineBackground');
+    
+    toggle.addEventListener('click', () => {
+      document.body.classList.toggle('dark');
+      
+      // Save theme preference
+      const isDark = document.body.classList.contains('dark');
+      localStorage.setItem('darkMode', isDark);
+    });
+    
+    // Load saved theme preference
+    const savedTheme = localStorage.getItem('darkMode');
+    if (savedTheme === 'true') {
+      document.body.classList.add('dark');
+    }
+    
+    // Handle Spline iframe loading
+    const iframe = splineBackground.querySelector('iframe');
+    iframe.addEventListener('load', () => {
+      splineBackground.classList.add('loaded');
+    });
+    
+    // Error handling for Spline
+    iframe.addEventListener('error', () => {
+      console.log('Spline background failed to load');
+      splineBackground.style.display = 'none';
+    });
+    
+    // Add smooth scrolling for form validation errors
+    window.addEventListener('load', () => {
+      const errorElements = document.querySelectorAll('.errorlist');
+      if (errorElements.length > 0) {
+        errorElements[0].scrollIntoView({ behavior: 'smooth', block: 'center' });
+      }
+    });
+    
+    // Enhanced form interactions
+    const inputs = document.querySelectorAll('input, textarea, select');
+    inputs.forEach(input => {
+      input.addEventListener('focus', function() {
+        this.closest('.form-container').style.transform = 'scale(1.02)';
+      });
+      
+      input.addEventListener('blur', function() {
+        this.closest('.form-container').style.transform = 'scale(1)';
+      });
+    });
+  </script>
+</body>
+</html>

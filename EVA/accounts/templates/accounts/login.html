@@ -1,0 +1,476 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Login</title>
+  <link href="https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css" rel="stylesheet"/>
+    <style>
+    .dropdown {
+      position: relative;
+      display: inline-block;
+    }
+
+    .dropdown-btn {
+      padding: 10px 20px;
+      font-size: 16px;
+      cursor: pointer;
+    }
+
+    .dropdown-content {
+      display: none;
+      position: absolute;
+      background-color: white;
+      min-width: 200px;
+      box-shadow: 0px 8px 16px rgba(0,0,0,0.2);
+      z-index: 1;
+    }
+
+    .dropdown-content a {
+      padding: 12px 16px;
+      display: block;
+      text-decoration: none;
+      color: black;
+    }
+
+    .dropdown-content a:hover {
+      background-color: #f1f1f1;
+    }
+
+    .dropdown:hover .dropdown-content {
+      display: block;
+    }
+  </style>
+  <style>
+    :root {
+      --bg-light: #f7f9fc;
+      --bg-dark: #1c1f2e;
+      --text-light: #333;
+      --text-dark: #f0f0f0;
+      --primary-light: #4e54c8;
+      --primary-dark: #8f94fb;
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      background: var(--bg-light);
+      color: var(--text-light);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      transition: 0.4s ease;
+    }
+
+    body.dark {
+      background: var(--bg-dark);
+      color: var(--text-dark);
+    }
+
+    .container {
+      background-color: #fff;
+      width: 900px;
+      height: 600px;
+      display: flex;
+      position: relative;
+      overflow: hidden;
+      border-radius: 20px;
+      box-shadow: 0 0 20px rgba(0,0,0,0.1);
+      transition: 0.4s ease;
+    }
+
+    body.dark .container {
+      background-color: #2b2f4c;
+    }
+
+    .form-box {
+      width: 50%;
+      padding: 40px;
+      transition: 0.5s;
+      z-index: 2;
+      background-color: inherit;
+    }
+
+    .form-box h1 {
+      margin-bottom: 20px;
+      font-size: 28px;
+      color: var(--primary-light);
+      text-align: center;
+    }
+
+    body.dark .form-box h1 {
+      color: var(--primary-dark);
+    }
+
+    .input-box {
+      position: relative;
+      margin-bottom: 20px;
+    }
+
+    .input-box input,
+    .input-box select {
+      width: 100%;
+      padding: 12px;
+      padding-right: 40px;
+      border: 1px solid #ccc;
+      border-radius: 8px;
+      outline: none;
+      background: transparent;
+      color: inherit;
+    }
+
+    .input-box i {
+      position: absolute;
+      right: 15px;
+      top: 50%;
+      transform: translateY(-50%);
+      color: var(--primary-light);
+    }
+
+    body.dark .input-box i {
+      color: var(--primary-dark);
+    }
+
+    .forgot-link {
+      text-align: right;
+      margin-bottom: 15px;
+    }
+
+    .forgot-link a {
+      text-decoration: none;
+      font-size: 14px;
+      color: var(--primary-light);
+    }
+
+    body.dark .forgot-link a {
+      color: var(--primary-dark);
+    }
+
+    .btn {
+      width: 100%;
+      padding: 12px;
+      border: none;
+      background-color: var(--primary-light);
+      color: #fff;
+      border-radius: 8px;
+      cursor: pointer;
+      font-size: 16px;
+      margin-bottom: 10px;
+    }
+
+    .btn:hover {
+      background-color: #3b40a4;
+    }
+
+    .social-icons {
+      display: flex;
+      justify-content: center;
+      gap: 15px;
+      margin-top: 10px;
+    }
+
+    .social-icons a {
+      font-size: 20px;
+      color: var(--primary-light);
+    }
+
+    body.dark .social-icons a {
+      color: var(--primary-dark);
+    }
+
+    .toggle-box {
+      width: 50%;
+      height: 100%;
+      background: linear-gradient(to right, var(--primary-light), var(--primary-dark));
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      text-align: center;
+      padding: 30px;
+      color: #fff;
+      z-index: 1;
+      position: absolute;
+      top: 0;
+      right: 0;
+      transition: 0.5s ease;
+    }
+
+    .toggle-box h1 {
+      font-size: 24px;
+      margin-bottom: 10px;
+    }
+
+    .toggle-box p {
+      font-size: 14px;
+      margin: 10px 0;
+    }
+
+    .register {
+      position: absolute;
+      left: 100%;
+      top: 0;
+      height: 100%;
+      width: 50%;
+      background-color: inherit;
+      transition: 0.5s;
+      z-index: 2;
+    }
+
+    .container.active .login {
+      transform: translateX(-100%);
+    }
+
+    .container.active .register {
+      transform: translateX(-100%);
+    }
+
+    .container.active .toggle-box {
+      right: 50%;
+      left: 0;
+    }
+
+    .toggle-box.login-content,
+    .toggle-box.register-content {
+      display: none;
+    }
+
+    .container:not(.active) .toggle-box.login-content {
+      display: flex;
+    }
+
+    .container.active .toggle-box.register-content {
+      display: flex;
+    }
+
+    .theme-toggle {
+      position: absolute;
+      top: 20px;
+      right: 20px;
+      font-size: 24px;
+      background: none;
+      border: none;
+      cursor: pointer;
+      color: var(--primary-light);
+      transition: color 0.3s ease;
+      z-index: 3;
+    }
+
+    body.dark .theme-toggle {
+      color: var(--primary-dark);
+    }
+
+    .input-box.flex-otp {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .input-box.flex-otp input {
+      flex: 1;
+    }
+
+    .input-box.flex-otp button {
+      padding: 10px 16px;
+      white-space: nowrap;
+      font-size: 14px;
+    }
+
+    .phone-group {
+      display: flex;
+      gap: 10px;
+    }
+
+    .country-select {
+      display: flex;
+      align-items: center;
+      border: 1px solid #ccc;
+      border-radius: 8px;
+      padding: 0 8px;
+      background: transparent;
+    }
+
+    .country-select .flag {
+      margin-right: 4px;
+    }
+
+    .country-select select {
+      border: none;
+      background: transparent;
+      color: inherit;
+      font-size: 14px;
+      outline: none;
+      cursor: pointer;
+    }
+
+    .phone-group input {
+      flex: 1;
+    }
+
+    @media screen and (max-width: 768px) {
+      .container {
+        flex-direction: column;
+        height: auto;
+        width: 95%;
+      }
+
+      .form-box,
+      .register,
+      .toggle-box {
+        width: 100%;
+        position: relative;
+        transform: none !important;
+      }
+
+      .toggle-box {
+        order: -1;
+        position: relative;
+      }
+
+      .register {
+        position: relative;
+      }
+
+      .container.active .toggle-box {
+        right: 0;
+      }
+    }
+  </style>
+</head>
+<body>
+  <button class="theme-toggle" id="themeToggle" title="Toggle Light/Dark Mode">
+    <i class="bx bxs-bulb"></i>
+  </button>
+
+  <div class="container" id="container">
+    <!-- Login Form -->
+    <div class="form-box login">
+        <h1>Hospital Management System</h1>
+        {% if messages %}
+            {% for message in messages %}
+                <p class="error">{{ message }}</p>
+            {% endfor %}
+        {% endif %}
+        <form method="POST">
+        {% csrf_token %}
+        <div class="input-box"><input type="text" placeholder="Username" name="username" required /><i class="bx bxs-user"></i></div>
+        <div class="input-box"><input type="password" placeholder="Password" name="password" required /><i class="bx bxs-lock-alt"></i></div>
+        <div class="forgot-link"><a href="#">Forgot Password?</a></div>
+        <button type="submit" class="btn">Login</button>
+        <p>or login with social platforms</p>
+        <div class="social-icons">
+          <a href="#"><i class="bx bxl-google"></i></a>
+          <a href="#"><i class="bx bxl-facebook"></i></a>
+          <a href="#"><i class="bx bxl-github"></i></a>
+          <a href="#"><i class="bx bxl-linkedin"></i></a>
+        </div>
+      </form>
+    </div>
+
+    <!-- Register Form -->
+    <div class="form-box register">
+      <form>
+        <h1>Register</h1>
+        <div class="input-box"><input type="text" placeholder="Username" required /><i class="bx bxs-user"></i></div>
+        <div class="input-box"><input type="email" placeholder="Email" required /><i class="bx bxs-envelope"></i></div>
+        <div class="input-box"><input type="password" placeholder="Password" required /><i class="bx bxs-lock-alt"></i></div>
+        
+        <div class="input-box phone-group">
+          <div class="country-select">
+            <span class="flag">🇮🇳</span>
+            <select id="countryCode">
+              <option value="+91" selected>+91</option>
+              <option value="+1">+1</option>
+              <option value="+44">+44</option>
+            </select>
+          </div>
+          <input type="text" placeholder="Phone Number" required />
+          <i class="bx bxs-phone"></i>
+        </div>
+
+        <div class="input-box"><input type="text" placeholder="Alternate Phone Number" /><i class="bx bxs-phone-call"></i></div>
+        <div class="input-box flex-otp">
+          <input type="text" placeholder="Enter OTP" />
+          <button type="button" class="btn" onclick="getOTP()">Get OTP</button>
+        </div>
+        <button type="submit" class="btn">Register</button>
+        <p>or register with social platforms</p>
+        <div class="social-icons">
+          <a href="#"><i class="bx bxl-google"></i></a>
+          <a href="#"><i class="bx bxl-facebook"></i></a>
+          <a href="#"><i class="bx bxl-github"></i></a>
+          <a href="#"><i class="bx bxl-linkedin"></i></a>
+        </div>
+      </form>
+    </div>
+
+    <!-- Toggle Boxes -->
+    <div class="toggle-box login-content">
+      <h1>Hello, Welcome!</h1>
+      <p>Don't have an account?</p>
+      <button class="btn" id="registerBtn">authenticate</button>
+    <div class="dropdown">
+        <button class="btn" id="registerBtn">Register as</button>
+            <div class="dropdown-content">
+                <a href="#" onclick="redirectTo('{% url 'accounts:register_doctor' %}')">Doctor</a>
+                <a href="#" onclick="redirectTo('{% url 'accounts:register_nurse' %}')">Nurse</a>
+                <a href="#" onclick="redirectTo('{% url 'accounts:register_patient' %}')">Patient</a>
+                <a href="#" onclick="redirectTo('{% url 'accounts:register_hospital' %}')">Hospital Admin</a>
+           </div>
+    </div>
+    </div>
+    <div class="toggle-box register-content">
+      <h1>Already have an account?</h1>
+      <button class="btn" id="loginBtn">Login</button>
+    </div>
+  </div>
+
+  <script>
+    const container = document.getElementById('container');
+    const themeBtn = document.getElementById('themeToggle');
+
+    document.getElementById('registerBtn').addEventListener('click', () => {
+      container.classList.add('active');
+    });
+
+    document.getElementById('loginBtn').addEventListener('click', () => {
+      container.classList.remove('active');
+    });
+
+    themeBtn.addEventListener('click', () => {
+      document.body.classList.toggle('dark');
+    });
+
+    function getOTP() {
+      alert("OTP sent to your phone!");
+    }
+  </script>
+  <script>
+  function redirectToRegister() {
+    const role = document.getElementById('role-select').value;
+
+    const roleToUrl = {
+      hospital: '/accounts/register_hospital/',
+      doctor: '/accounts/register_doctor/',
+      nurse: '/accounts/register_nurse/',
+      patient: '/accounts/register_patient/',
+    };
+
+    if (roleToUrl[role]) {
+      window.location.href = roleToUrl[role];
+    }
+  }
+</script>
+<script>
+function redirectTo(url) {
+    window.location.href = url;
+}
+</script>
+</body>
+</html>

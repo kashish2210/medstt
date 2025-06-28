@@ -50,3 +50,4 @@ pynput
 soundfile
 qrcode
 twilio
+reportlab

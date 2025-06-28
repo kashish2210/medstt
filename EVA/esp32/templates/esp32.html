@@ -1,29 +1,434 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-    <title>ESP32 Audio Recorder</title>
-    <script>
-        function startRecording() {
-            fetch('/esp32/start/')
-                .then(response => response.json())
-                .then(data => {
-                    document.getElementById("status").innerText = data.status;
-                });
-        }
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Medical Audio Transcription System</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet" />
+  <style>
+    * {
+      margin: 0; padding: 0; box-sizing: border-box;
+    }
 
-        function stopRecording() {
-            fetch('/esp32/stop/')
-                .then(response => response.json())
-                .then(data => {
-                    document.getElementById("status").innerText = data.status;
-                });
-        }
-    </script>
+    html, body {
+      height: 100%;
+      font-family: 'Poppins', sans-serif;
+      background: linear-gradient(135deg, #d6f5ff, #eaf9ff);
+      color: #1f2b3e;
+      overflow-x: hidden;
+    }
+
+    .rbc-background {
+      position: fixed;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
+      z-index: 0;
+      pointer-events: none;
+      perspective: 1000px;
+    }
+
+    .rbc {
+      position: absolute;
+      width: 60px;
+      height: 60px;
+      background: url('https://i.imgur.com/uhTQHVO.png') no-repeat center center / contain;
+      opacity: 0.3;
+      animation: floatRBC 20s infinite ease-in-out;
+      transform-style: preserve-3d;
+      filter: drop-shadow(0 0 8px rgba(0, 153, 255, 0.2));
+    }
+
+    @keyframes floatRBC {
+      0% { transform: translate3d(0, 100vh, 0) rotateX(0deg) rotateY(0deg) rotateZ(0deg); }
+      100% { transform: translate3d(0, -120vh, 0) rotateX(450deg) rotateY(450deg) rotateZ(450deg); }
+    }
+
+    .main-container {
+      position: relative;
+      z-index: 2;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+    }
+
+    .header {
+      text-align: center;
+      margin-bottom: 30px;
+    }
+
+    h1 {
+      font-size: 2.5rem;
+      font-weight: 600;
+      margin-bottom: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 12px;
+      color: #0a3d62;
+    }
+
+    .subtitle {
+      font-size: 1.1rem;
+      color: #6c7b8a;
+      margin-bottom: 20px;
+    }
+
+    .medical-icon {
+      font-size: 3rem;
+    }
+
+    .control-panel {
+      background: rgba(255, 255, 255, 0.95);
+      border-radius: 20px;
+      padding: 30px;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+      backdrop-filter: blur(10px);
+      max-width: 600px;
+      width: 100%;
+    }
+
+    .recording-controls {
+      display: flex;
+      gap: 20px;
+      justify-content: center;
+      margin-bottom: 25px;
+    }
+
+    .button {
+      height: 50px;
+      width: 200px;
+      border-radius: 30px;
+      background-color: white;
+      color: #0a3d62;
+      font-weight: 600;
+      font-size: 16px;
+      letter-spacing: 2px;
+      border: 2px solid #0a3d62;
+      cursor: pointer;
+      position: relative;
+      overflow: hidden;
+      transition: all 0.3s ease;
+    }
+
+    .button:hover {
+      background-color: #0a3d62;
+      color: white;
+      transform: scale(1.05);
+      box-shadow: 0 8px 20px rgba(0, 153, 255, 0.3);
+    }
+
+    .button:disabled {
+      background-color: #e9ecef;
+      color: #6c757d;
+      border-color: #dee2e6;
+      cursor: not-allowed;
+      transform: none;
+      box-shadow: none;
+    }
+
+    #status {
+      font-size: 1.1rem;
+      color: #00a86b;
+      font-weight: 500;
+      text-align: center;
+      margin-bottom: 20px;
+      padding: 10px;
+      background: rgba(0, 168, 107, 0.1);
+      border-radius: 10px;
+    }
+
+    .report-section {
+      margin-top: 20px;
+      border-top: 1px solid #dee2e6;
+      padding-top: 20px;
+    }
+
+    .report-section h3 {
+      color: #0a3d62;
+      margin-bottom: 15px;
+      text-align: center;
+    }
+
+    .report-buttons {
+      display: flex;
+      gap: 15px;
+      justify-content: center;
+      flex-wrap: wrap;
+    }
+
+    .report-btn {
+      padding: 12px 24px;
+      border-radius: 25px;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: white;
+      text-decoration: none;
+      font-weight: 500;
+      font-size: 14px;
+      transition: all 0.3s ease;
+      border: none;
+      cursor: pointer;
+      min-width: 150px;
+    }
+
+    .report-btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+    }
+
+    .report-btn.pdf {
+      background: linear-gradient(135deg, #ff6b6b 0%, #ee5a24 100%);
+    }
+
+    .report-btn.json {
+      background: linear-gradient(135deg, #4ecdc4 0%, #20bf6b 100%);
+    }
+
+    .report-btn.view {
+      background: linear-gradient(135deg, #a8edea 0%, #fed6e3 100%);
+      color: #333;
+    }
+
+    .processing-indicator {
+      display: none;
+      text-align: center;
+      margin: 20px 0;
+      padding: 15px;
+      background: rgba(255, 193, 7, 0.1);
+      border-radius: 10px;
+      border-left: 4px solid #ffc107;
+    }
+
+    .processing-indicator.show {
+      display: block;
+    }
+
+    /* Mic Popup Styling */
+    #mic-popup {
+      position: fixed;
+      left: 50%;
+      bottom: -250px;
+      transform: translateX(-50%);
+      opacity: 0;
+      z-index: 10;
+      width: 200px;
+      height: 200px;
+      background: radial-gradient(circle, #ffffffcc, #d1f3ffcc);
+      border-radius: 50%;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: flex-start;
+      padding-top: 55px;
+      transition: bottom 0.5s ease, opacity 0.5s ease;
+      box-shadow: 0 0 40px rgba(0, 153, 255, 0.6);
+      pointer-events: none;
+    }
+
+    #mic-popup.show {
+      bottom: 100px;
+      opacity: 1;
+      pointer-events: auto;
+    }
+
+    .mic-icon {
+      font-size: 4.5rem;
+      animation: pulse 1.2s infinite ease-in-out;
+      color: #0077ff;
+      position: relative;
+      z-index: 2;
+    }
+
+    @keyframes pulse {
+      0%   { transform: scale(1); opacity: 0.7; }
+      50%  { transform: scale(1.2); opacity: 1; }
+      100% { transform: scale(1); opacity: 0.7; }
+    }
+
+    .rotating-ring {
+      position: absolute;
+      top: 15px;
+      left: 15px;
+      width: 170px;
+      height: 170px;
+      border: 4px solid transparent;
+      border-top: 4px solid #00cfff;
+      border-right: 4px solid #00cfff;
+      border-radius: 50%;
+      animation: spin 2s linear infinite;
+      z-index: 1;
+      opacity: 0.9;
+      filter: drop-shadow(0 0 8px #00cfff);
+    }
+
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+
+    @media(max-width: 600px) {
+      h1 { font-size: 2rem; }
+      .recording-controls { flex-direction: column; gap: 15px; align-items: center; }
+      .button { width: 180px; }
+      .report-buttons { flex-direction: column; align-items: center; }
+      .control-panel { margin: 10px; padding: 20px; }
+    }
+  </style>
 </head>
 <body>
-    <h1>ESP32 Audio Recorder</h1>
-    <button onclick="startRecording()">Start Recording</button>
-    <button onclick="stopRecording()">Stop & Save</button>
-    <p id="status">Status: Ready</p>
+
+  <!-- Animated Background RBCs -->
+  <div class="rbc-background" id="rbcContainer"></div>
+
+  <!-- Main Container -->
+  <div class="main-container">
+    <div class="header">
+      <h1>
+        <span class="medical-icon">⚕</span>
+        Medical Audio Transcription
+      </h1>
+      <p class="subtitle">Professional Voice-to-Text Medical Documentation</p>
+    </div>
+
+    <div class="control-panel">
+      <!-- Recording Controls -->
+      <div class="recording-controls">
+        <button class="button" id="startBtn" onclick="startRecording()">
+          <span class="btn-txt">▶ START RECORDING</span>
+        </button>
+        <button class="button" id="stopBtn" onclick="stopRecording()" disabled>
+          <span class="btn-txt">⏹ STOP & PROCESS</span>
+        </button>
+      </div>
+
+      <div id="status">Status: Ready to Record</div>
+
+      <!-- Processing Indicator -->
+      <div class="processing-indicator" id="processingIndicator">
+        <strong>🔄 Processing Audio...</strong><br>
+        Transcribing and generating medical report. Please wait...
+      </div>
+
+      <!-- Report Section -->
+      <div class="report-section" id="reportSection" style="display: none;">
+        <h3>📋 Generated Reports</h3>
+        <div class="report-buttons">
+          <a href="#" class="report-btn pdf" id="pdfBtn" onclick="downloadPDF()">
+            📄 Download PDF Report
+          </a>
+          <a href="#" class="report-btn json" id="jsonBtn" onclick="viewJSON()">
+            📊 View JSON Data
+          </a>
+          <a href="#" class="report-btn view" id="viewBtn" onclick="viewFormatted()">
+            👁 View Formatted Report
+          </a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Microphone Visual Center Popup -->
+  <div id="mic-popup">
+    <div class="rotating-ring"></div>
+    <div class="mic-icon">🎙</div>
+  </div>
+
+  <script>
+    let isRecording = false;
+    let checkTranscriptionInterval;
+
+    function startRecording() {
+        if (isRecording) return;
+        
+        fetch('/esp32/start/')
+        .then(response => response.json())
+        .then(data => {
+            isRecording = true;
+            document.getElementById("status").innerText = `Status: 🎧 ${data.status}`;
+            document.getElementById("mic-popup").classList.add("show");
+            document.getElementById("startBtn").disabled = true;
+            document.getElementById("stopBtn").disabled = false;
+            document.getElementById("reportSection").style.display = "none";
+        })
+        .catch(err => {
+            document.getElementById("status").innerText = "Status: Failed to start recording ❌";
+            console.error(err);
+        });
+    }
+
+    function stopRecording() {
+        if (!isRecording) return;
+        
+        fetch('/esp32/stop/')
+        .then(response => response.json())
+        .then(data => {
+            isRecording = false;
+            document.getElementById("status").innerText = `Status: ✅ ${data.status}`;
+            document.getElementById("mic-popup").classList.remove("show");
+            document.getElementById("startBtn").disabled = false;
+            document.getElementById("stopBtn").disabled = true;
+            document.getElementById("processingIndicator").classList.add("show");
+            
+            // Start checking for transcription results
+            checkTranscriptionInterval = setInterval(checkTranscriptionStatus, 2000);
+        })
+        .catch(err => {
+            document.getElementById("status").innerText = "Status: Failed to stop recording ❌";
+            console.error(err);
+            isRecording = false;
+            document.getElementById("startBtn").disabled = false;
+            document.getElementById("stopBtn").disabled = true;
+        });
+    }
+
+    function checkTranscriptionStatus() {
+        fetch('/esp32/get-transcription/')
+        .then(response => response.json())
+        .then(data => {
+            if (data.transcription || data.structured_data) {
+                clearInterval(checkTranscriptionInterval);
+                document.getElementById("processingIndicator").classList.remove("show");
+                document.getElementById("reportSection").style.display = "block";
+                document.getElementById("status").innerText = "Status: ✅ Report Generated Successfully";
+            }
+        })
+        .catch(err => {
+            console.error("Error checking transcription:", err);
+        });
+    }
+
+    function downloadPDF() {
+        window.open('/esp32/download-pdf/', '_blank');
+    }
+
+    function viewJSON() {
+        window.open('/esp32/get-transcription/', '_blank');
+    }
+
+    function viewFormatted() {
+        window.open('/esp32/view-report/', '_blank');
+    }
+
+    // RBC floating background elements
+    const rbcContainer = document.getElementById('rbcContainer');
+    for (let i = 0; i < 50; i++) {
+        const rbc = document.createElement('div');
+        rbc.className = 'rbc';
+        rbc.style.left = `${Math.random() * 100}vw`;
+        rbc.style.top = `${Math.random() * 100}vh`;
+        rbc.style.animationDuration = `${15 + Math.random() * 10}s`;
+        rbc.style.animationDelay = `${Math.random() * 10}s`;
+        rbcContainer.appendChild(rbc);
+    }
+
+    // Cleanup on page unload
+    window.addEventListener('beforeunload', function() {
+        if (checkTranscriptionInterval) {
+            clearInterval(checkTranscriptionInterval);
+        }
+    });
+</script>
 </body>
 </html>
